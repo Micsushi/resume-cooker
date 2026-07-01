@@ -127,7 +127,48 @@ Acceptance criteria:
 - Parser failures are captured without blocking unrelated checks.
 - The report makes disagreement visible rather than pretending one parser is the truth.
 
-## Stage 7: Hunt C2 Preflight And Postflight Contract
+## Stage 7: Local And API Test Suites
+
+Goal: separate checks that can run fully locally from checks that may benefit from API-backed evaluators.
+
+Resume Cooker may use external APIs. Hunt C2 should not inherit that requirement. C2 can remain local-model-first while Resume Cooker owns optional API-based resume evaluation.
+
+Planned deliverables:
+
+- `local` suite for deterministic and local-model checks.
+- `api` suite for checks that call external providers.
+- `full` suite that runs both local and API checks.
+- Provider configuration that is explicit and easy to disable.
+- Clear report metadata showing which checks used local code, local models, or external APIs.
+
+Local suite examples:
+
+- PDF build.
+- PDF text extraction.
+- Critical keyword extraction checks.
+- Section ordering checks.
+- Local parser comparison.
+- Local model evaluation when configured.
+- Immutable fact comparison before and after tailoring.
+
+API suite examples:
+
+- Stronger LLM review of resume clarity and credibility.
+- JD/resume semantic match review.
+- ATS-style rubric scoring across multiple role families.
+- Detection of suspicious or unsupported claims.
+- Comparison between local-model and stronger-model judgments.
+
+Acceptance criteria:
+
+- API checks never run accidentally.
+- Missing API keys skip API checks with a clear message.
+- Local checks can run offline.
+- Full checks can run local and API suites together.
+- Parallel execution is supported later where checks are independent.
+- Reports label provider, model, timestamp, prompt version, and whether resume/JD content left the machine.
+
+## Stage 8: Hunt C2 Preflight And Postflight Contract
 
 Goal: define how Resume Cooker can eventually run around Hunt C2 without being part of Hunt at first.
 
@@ -145,7 +186,7 @@ Acceptance criteria:
 - A C2-generated resume must pass the same text-layer and quality checks as the original.
 - C2-specific issues are reported separately from source-resume issues.
 
-## Stage 8: CI And Release Workflow
+## Stage 9: CI And Release Workflow
 
 Goal: make resume quality checks easy to run before pushing or applying.
 

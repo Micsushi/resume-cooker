@@ -16,6 +16,7 @@ Private source-of-truth repo for Michael Shi's resume, local PDF generation, and
 - `docs/roadmap.md`: staged implementation plan from source-control baseline through Hunt integration.
 - `docs/resume-quality-criteria.md`: criteria list for parseability, ATS safety, evidence quality, keyword coverage, and post-tailoring regressions.
 - `docs/hunt-c2-integration-notes.md`: notes on how Resume Cooker can later run before and after Hunt C2/Fletcher.
+- `docs/evaluation-suites.md`: planned separation between local-only checks, optional API checks, and full checks.
 - `docs/ats-testing-methods.md`: practical ATS testing approaches.
 - `docs/tester-sources.md`: provenance for copied tester snapshots.
 

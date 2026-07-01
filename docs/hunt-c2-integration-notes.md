@@ -114,6 +114,26 @@ resume-cooker compare --before source.tex --after tailored.tex --pdf tailored.pd
 
 Hunt can later shell out to those commands or call a tiny HTTP service. That keeps Resume Cooker testable independently and avoids coupling it to Hunt's DB schema.
 
+## Model And API Boundary
+
+Hunt C2 can remain local-model-first. Resume Cooker may use API-backed evaluation separately.
+
+Recommended split:
+
+- C2/Fletcher: local model or deterministic tailoring, with current provider policy unchanged.
+- Resume Cooker local suite: deterministic checks, local parsers, local model review when configured.
+- Resume Cooker API suite: optional external model evaluation for harder judgment tasks.
+
+This means C2 does not need API access to tailor resumes. API calls, when useful, live in Resume Cooker as explicit preflight or postflight checks.
+
+Future Hunt integration should be able to choose:
+
+- Run only Resume Cooker local checks before/after C2.
+- Run only Resume Cooker API checks for deeper review.
+- Run a full check that includes both suites.
+
+Any API-backed report passed back to Hunt should clearly mark that external evaluation was used.
+
 ## Candidate Report Contract
 
 Future JSON should be stable enough for Hunt to consume:

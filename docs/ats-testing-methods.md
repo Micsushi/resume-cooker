@@ -54,3 +54,20 @@ Good future repo checks:
 - Fail if critical keywords are missing.
 - Save extracted text under `resume/output/`.
 - Run one or more parser/scoring tools against a sample job description.
+
+## Tool Inventory
+
+The current private repo includes these tester snapshots under `testers/`:
+
+- `ATS-Checker`
+- `ats-screener`
+- `Resume-Matcher`
+- `ResumeParser`
+
+These are source snapshots, not installed environments. Their dependency folders are intentionally excluded so the private repo stays pushable.
+
+## Preview Workflow
+
+For visual checks while editing LaTeX, use the local preview server documented in `generator/README.md`.
+
+The preview server generates a temporary PDF under `.runtime/preview` and serves it in-browser. That gives a fast view of the rendered resume without committing or manually saving output PDFs.

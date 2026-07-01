@@ -1,6 +1,7 @@
 # Generated resume outputs
 resume/output/*
 !resume/output/.gitkeep
+.runtime/
 
 # LaTeX build artifacts
 *.aux

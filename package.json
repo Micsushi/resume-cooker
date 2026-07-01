@@ -1,0 +1,11 @@
+{
+  "name": "resume-cooker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:pdf": "node generator/scripts/build-pdf.mjs",
+    "preview": "node generator/scripts/preview-server.mjs",
+    "check:tools": "node generator/scripts/check-tools.mjs"
+  }
+}

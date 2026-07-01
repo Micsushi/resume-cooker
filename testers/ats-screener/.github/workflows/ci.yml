@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20]
+
+    env:
+      PUBLIC_FIREBASE_API_KEY: ci-placeholder
+      PUBLIC_FIREBASE_AUTH_DOMAIN: ci-placeholder.firebaseapp.com
+      PUBLIC_FIREBASE_PROJECT_ID: ci-placeholder
+      PUBLIC_FIREBASE_STORAGE_BUCKET: ci-placeholder.appspot.com
+      PUBLIC_FIREBASE_MESSAGING_SENDER_ID: '000000000000'
+      PUBLIC_FIREBASE_APP_ID: '1:000000000000:web:0000000000000000'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: type check
+        run: pnpm check
+
+      - name: lint
+        run: pnpm lint
+
+      - name: format check
+        run: pnpm format:check
+
+      - name: unit tests
+        run: pnpm test
+
+      - name: build
+        run: pnpm build

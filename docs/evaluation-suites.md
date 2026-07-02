@@ -34,6 +34,12 @@ Expected command shape:
 resume-cooker check --suite local --resume resume/source/current.tex
 ```
 
+Current npm scaffold:
+
+```bash
+npm run check:local
+```
+
 ### API Suite
 
 Purpose: checks that benefit from stronger external models or provider-specific evaluation.
@@ -52,6 +58,15 @@ Expected command shape:
 resume-cooker check --suite api --resume resume/source/current.tex --jd fixtures/software_engineering_intern_jd.txt
 ```
 
+Current npm scaffold:
+
+```bash
+npm run check:api
+```
+
+The API scaffold does not send content anywhere. It reports a warning until explicit provider,
+privacy, and cost controls are implemented.
+
 ### Full Suite
 
 Purpose: run local and API checks together when the user explicitly wants the broadest signal.
@@ -60,6 +75,12 @@ Expected command shape:
 
 ```bash
 resume-cooker check --suite full --resume resume/source/current.tex --jd fixtures/software_engineering_intern_jd.txt
+```
+
+Current npm scaffold:
+
+```bash
+npm run check:full
 ```
 
 Future implementation should run independent checks in parallel where possible:

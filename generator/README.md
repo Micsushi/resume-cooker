@@ -8,8 +8,19 @@ From the repo root:
 
 ```bash
 npm run check:tools
+npm run format:check
+npm run lint
+npm test
+npm run ci
 npm run build:pdf
 npm run preview
+```
+
+`npm run check:tools` is nonfatal by default and prints what is available on the machine. To make
+missing PDF build engines fail explicitly, run:
+
+```bash
+npm run check:tools -- --require-pdf-engine
 ```
 
 ## PDF Build
@@ -53,6 +64,18 @@ The preview server:
 - keeps preview artifacts out of Git
 
 This still creates a temporary PDF because browsers need a rendered artifact to display. The important difference is that the PDF is not treated as a saved resume output and is not committed.
+
+## Root Checks
+
+Stage 1 root checks are deliberately small:
+
+- Prettier checks root-owned docs, JSON, YAML, HTML, and JavaScript.
+- ESLint checks root-owned JavaScript and ESM scripts.
+- Node's built-in test runner executes focused generator tests under `generator/scripts/`.
+- `testers/` is treated as vendored reference material and is not included in default root checks.
+
+GitHub Actions runs `npm ci` and `npm run ci` on pushes and pull requests to `main`. It does not
+install TeX, build private PDFs, or upload PDF/log artifacts.
 
 ## Toolchain Notes
 

@@ -38,19 +38,19 @@ export function runCommand(command, args, options = {}) {
   return new Promise((resolvePromise, reject) => {
     const child = spawn(command, args, {
       cwd: options.cwd || repoRoot,
-      shell: false,
-      env: process.env
+      shell: options.shell || false,
+      env: { ...process.env, ...(options.env || {}) }
     });
 
     let stdout = "";
     let stderr = "";
     child.stdout.on("data", (chunk) => {
       stdout += chunk.toString();
-      if (!options.quiet) process.stdout.write(chunk);
+      if (!options.quiet) safeWrite(process.stdout, chunk);
     });
     child.stderr.on("data", (chunk) => {
       stderr += chunk.toString();
-      if (!options.quiet) process.stderr.write(chunk);
+      if (!options.quiet) safeWrite(process.stderr, chunk);
     });
     child.on("error", reject);
     child.on("close", (code) => {
@@ -65,6 +65,14 @@ export function runCommand(command, args, options = {}) {
       }
     });
   });
+}
+
+function safeWrite(stream, chunk) {
+  try {
+    stream.write(chunk);
+  } catch (error) {
+    if (error.code !== "EPIPE") throw error;
+  }
 }
 
 export async function detectEngine(requested, commandExistsImpl = commandExists) {

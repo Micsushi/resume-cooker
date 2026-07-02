@@ -1,0 +1,84 @@
+\documentclass[10pt, letterpaper]{article}
+
+\usepackage[
+    ignoreheadfoot,
+    top=0.55in,
+    bottom=0.55in,
+    left=0.55in,
+    right=0.55in
+]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage[
+    pdftitle={Michael Shi ATS Resume},
+    pdfauthor={Michael Shi},
+    colorlinks=true,
+    urlcolor=black
+]{hyperref}
+
+\input{glyphtounicode}
+\pdfgentounicode=1
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setlist[itemize]{leftmargin=1.1em, itemsep=1pt, topsep=2pt, parsep=0pt}
+\titleformat{\section}{\bfseries\large}{}{0pt}{}[\titlerule]
+\titlespacing{\section}{0pt}{5pt}{3pt}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Michael Shi}}\\
+    Edmonton, AB \textbar{}
+    \href{mailto:michael.shi.work@gmail.com}{michael.shi.work@gmail.com} \textbar{}
+    \href{https://mshi.ca}{mshi.ca} \textbar{}
+    \href{https://linkedin.com/in/wjshi}{linkedin.com/in/wjshi} \textbar{}
+    \href{https://github.com/micsushi}{github.com/micsushi}\\
+    Software Engineer Intern \textbar{} Backend, Cloud, Frontend, and Infrastructure
+\end{center}
+
+\section{Education}
+\textbf{University of Alberta}, BSc in Computer Science with Specialization \hfill Expected Dec 2026\\
+\textbf{Awards:} Undergraduate Leadership Award, 4x Faculty of Science Scholarship, Dean's Honor Roll
+
+\section{Experience}
+\textbf{Junior Software Developer}, INVIDI Technologies, Edmonton, AB \hfill May 2025 -- Feb 2026
+\begin{itemize}
+    \item Built Kotlin microservices and REST APIs for real-time subscriber targeting across marketing, forecasting, and analytics platforms.
+    \item Established an AWS S3 cost-saving blueprint for 100+ developers, cutting storage cost by 74\% (\$18,000) with Terraform-managed intelligent-tiering and life cycle policies.
+    \item Accelerated cloud deployment cycles by automating CI/CD through Bitbucket Pipelines, Amazon ECR, and Kubernetes, saving 2 hours of weekly developer time.
+    \item Improved production reliability by configuring Datadog metrics, monitors, centralized logging, alerting, and on-call incident response workflows.
+\end{itemize}
+
+\textbf{Software Developer Intern}, INVIDI Technologies, Edmonton, AB \hfill May 2024 -- May 2025
+\begin{itemize}
+    \item Reduced backend operational cost by 89\% (\$38,000) and removed false-positive alerts by migrating Apache Ignite workloads to AWS Aurora PostgreSQL.
+    \item Improved authentication performance by 30\% by decoupling OAuth permissions into SPA and M2M flows across TypeScript/Vue.js frontend code and Kotlin services.
+    \item Reduced external API cost by implementing forecast caching in DynamoDB-backed sync services.
+    \item Maintained team velocity during leadership transitions by facilitating Agile ceremonies, sprint planning, and Scrum workflows.
+\end{itemize}
+
+\textbf{Undergraduate Teaching Assistant}, University of Alberta, Edmonton, AB \hfill Sep 2023 -- Present
+\begin{itemize}
+    \item Mentored 500+ students across upper-level Computer Science courses in programming, architecture, and project delivery.
+    \item Improved grading consistency and reduced evaluation time by 85\% by building Python automation for rubric-driven grading workflows.
+\end{itemize}
+
+\section{Projects}
+\textbf{StudyAmp: NatHacks 1st Place} \hfill \href{https://github.com/NatRunners/StudyAmp}{github.com/NatRunners/StudyAmp}
+\begin{itemize}
+    \item Led a team of 5 to win NatHacks 1st Place and secure \$4,000 in research funding for an EEG-based attention monitoring web app.
+    \item Engineered a full-stack cloud architecture on Vercel and Supabase designed for 10,000+ concurrent users.
+    \item Achieved 85\% attention-scoring accuracy with a Python backend for real-time brainwave processing.
+    \item Built a responsive frontend with Next.js and Framer Motion and integrated Gemini AI summaries to reduce recording review time by 80\%.
+\end{itemize}
+
+\section{Technical Skills}
+\textbf{Languages:} Python, C, C++, Java, Kotlin, R, JavaScript, TypeScript, Bash\\
+\textbf{Frameworks:} Node.js, REST APIs, Express.js, Flask, FastAPI, React, Next.js, Vue.js, Tailwind, Supabase\\
+\textbf{Developer Tools:} Git, Docker, Kubernetes, MongoDB, Firebase, PostgreSQL, AWS, Aurora, DynamoDB, Gradle, Terraform, Datadog, Snyk, CI/CD
+
+\end{document}

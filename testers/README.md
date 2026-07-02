@@ -34,6 +34,14 @@ Keep excluding:
 - caches
 - generated build output
 
-## Future Orchestration
+## Top-Level Orchestration
 
-Resume Cooker should eventually wrap these tools from a top-level command instead of requiring manual navigation into each folder. The wrapper should normalize output into the report format described in `docs/resume-quality-criteria.md`.
+Run tester integrations from the repo root with:
+
+```bash
+npm run check:testers
+```
+
+The wrapper normalizes output into the report format described in
+`docs/resume-quality-criteria.md`. Tester dependencies are intentionally not installed by default;
+missing dependencies or missing PDFs/text files report warnings instead of joining default CI.

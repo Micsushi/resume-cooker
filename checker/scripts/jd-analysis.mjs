@@ -70,7 +70,7 @@ export function analyzeJobDescriptionText(jdText, resumeText = "") {
 
   checks.push(
     createCheck({
-      id: "jd_keyword_coverage_scaffold",
+      id: "jd_keyword_coverage",
       category: "jd_match",
       severity: missing.length > 0 ? "medium" : "low",
       status: missing.length > 0 ? "warning" : "pass",

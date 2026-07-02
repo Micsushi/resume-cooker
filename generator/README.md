@@ -16,8 +16,9 @@ npm run build:pdf
 npm run preview
 ```
 
-`npm run check:tools` is nonfatal by default and prints what is available on the machine. To make
-missing PDF build engines fail explicitly, run:
+`npm run check:tools` is nonfatal by default and prints what is available on the machine. Docker is
+reported as usable only when the daemon responds. To make missing PDF build engines fail
+explicitly, run:
 
 ```bash
 npm run check:tools -- --require-pdf-engine
@@ -83,6 +84,6 @@ This repo currently does not vendor a TeX distribution. Install one of:
 
 - TeX Live or MiKTeX with `latexmk`
 - a minimal `pdflatex` setup that supports the resume packages
-- Docker, so the generator can use the `texlive/texlive` image
+- Docker with the daemon running, so the generator can use the `texlive/texlive` image
 
 Future work can add a pinned Docker image or dev container for fully reproducible builds.

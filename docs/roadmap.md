@@ -39,11 +39,13 @@ Non-goals:
 
 Goal: prove generated PDFs are machine-readable before deeper ATS scoring.
 
-Current scaffold:
+Current implementation:
 
 - PDF text extraction helper can use local `pdftotext` or Docker-backed `pdftotext`.
 - Extracted text checks cover non-empty text, section presence/order, optional configured terms, and encoding noise.
-- Page-limit behavior is warning-only until the stage decision is finalized.
+- Page-limit behavior is a hard one-page failure when a PDF page count is available.
+- Docker-backed text extraction is supported when Docker is running.
+- The local suite runs text-layer checks when a PDF is provided or built.
 
 Deliverables:
 
@@ -64,11 +66,12 @@ Acceptance criteria:
 
 Goal: evaluate resume quality and JD fit without rewriting content by default.
 
-Current scaffold:
+Current implementation:
 
 - Local preflight report checks source integrity, ATS layout risks, standard sections, parseable contact fields, JD signal coverage, and tester snapshot presence.
-- API/model review exists only as an opt-in placeholder and does not send content anywhere.
-- Tester projects remain reference snapshots until a first wrapper is selected.
+- API/model review supports explicit opt-in OpenRouter and Anthropic adapters.
+- ATS-Checker parser comparison is wrapped for PDF parser-agreement checks; full tester applications remain reference snapshots until intentionally enabled.
+- `npm run check:testers` explicitly attempts tester execution and reports pass/skip results outside default CI.
 
 Deliverables:
 
@@ -89,7 +92,7 @@ Acceptance criteria:
 
 Goal: expose stable commands and reports that Hunt/C2 can call later without coupling to this repo's internals.
 
-Current scaffold:
+Current implementation:
 
 - `npm run check:local`, `npm run check:api`, and `npm run check:full` produce preflight reports.
 - `npm run compare` produces a postflight comparison report.

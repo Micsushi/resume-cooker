@@ -12,12 +12,13 @@ export async function checkTesterSnapshots() {
   }
   checks.push(
     createCheck({
-      id: "tester_wrappers_not_default",
+      id: "tester_wrappers_safe_default",
       category: "tester_integration",
       severity: "low",
-      status: "warning",
-      evidence: "Tester snapshots are present only as reference material in default checks.",
-      suggestedFix: "Choose a first tester wrapper before enabling installed tester execution."
+      status: "pass",
+      evidence:
+        "Tester snapshots are reference material by default; the ATS-Checker parser wrapper runs only when a PDF is available.",
+      suggestedFix: "Run with --build or --pdf when you want parser-agreement checks."
     })
   );
   return checks;

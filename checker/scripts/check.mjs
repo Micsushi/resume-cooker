@@ -3,12 +3,22 @@ import { readFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildPdf, getRepoRoot, parseArgs } from "../../generator/scripts/build-lib.mjs";
-import { createApiScaffoldReport } from "./api-analysis.mjs";
+import { checkAtsCheckerAgreement } from "./ats-checker.mjs";
+import { createApiReport } from "./api-analysis.mjs";
 import { analyzeJobDescription } from "./jd-analysis.mjs";
 import { createReport, mergeReports, writeReport } from "./report-lib.mjs";
 import { analyzeLatexSource } from "./source-analysis.mjs";
 import { checkTesterSnapshots } from "./tester-wrapper.mjs";
-import { analyzeExtractedText, extractPdfText } from "./text-layer.mjs";
+import { analyzeExtractedText, checkPdfPageLimit, extractPdfText } from "./text-layer.mjs";
+
+const defaultCriticalTerms = [
+  "Kubernetes",
+  "Terraform",
+  "PostgreSQL",
+  "Kotlin",
+  "TypeScript",
+  "DynamoDB"
+];
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const args = parseArgs(process.argv.slice(2));
@@ -24,30 +34,47 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   }
 }
 
-const defaultCriticalTerms = [
-  "Kubernetes",
-  "Terraform",
-  "PostgreSQL",
-  "Kotlin",
-  "TypeScript",
-  "DynamoDB"
-];
-
 export async function runCheck(options = {}) {
   const suite = options.suite || "local";
-  if (suite === "api") return createApiScaffoldReport({ suite: "api", stage: "preflight" });
+  if (suite === "api") {
+    const { resumeText, jdText } = await readReviewInputs(options);
+    return createApiReport({ suite: "api", stage: "preflight", resumeText, jdText });
+  }
   if (suite === "full") {
-    const local = await runLocalCheck(options);
-    const api = createApiScaffoldReport({ suite: "api", stage: "preflight" });
+    const [local, review] = await Promise.all([
+      runLocalCheck(options),
+      readReviewInputs(options).then(({ resumeText, jdText }) =>
+        createApiReport({ suite: "api", stage: "preflight", resumeText, jdText })
+      )
+    ]);
     return mergeReports({
       stage: "preflight",
       suite: "full",
-      reports: [local, api],
+      reports: [local, review],
       resume: local.resume,
       artifacts: local.artifacts
     });
   }
   return runLocalCheck(options);
+}
+
+async function readReviewInputs(options) {
+  const resume = options.resume || "resume/source/current.tex";
+  let resumeText = "";
+  let jdText = "";
+  try {
+    resumeText = await readFile(resolve(getRepoRoot(), resume), "utf8");
+  } catch {
+    resumeText = "";
+  }
+  if (options.jd) {
+    try {
+      jdText = await readFile(resolve(getRepoRoot(), options.jd), "utf8");
+    } catch {
+      jdText = "";
+    }
+  }
+  return { resumeText, jdText };
 }
 
 async function runLocalCheck(options) {
@@ -78,6 +105,12 @@ async function runLocalCheck(options) {
   }
 
   if (pdfPath && existsSync(resolve(getRepoRoot(), pdfPath))) {
+    checks.push(
+      await checkPdfPageLimit({
+        pdf: pdfPath,
+        maxPages: Number(options["max-pages"] || 1)
+      })
+    );
     const extracted = await extractPdfText({
       pdf: pdfPath,
       out: options["text-out"] || "resume/output/current.txt"
@@ -86,9 +119,11 @@ async function runLocalCheck(options) {
     resumeText = extracted.text;
     checks.push(
       ...analyzeExtractedText(extracted.text, {
-        warnPageLimit: true,
         criticalTerms: defaultCriticalTerms
       })
+    );
+    checks.push(
+      ...(await checkAtsCheckerAgreement({ pdf: pdfPath, baselineText: extracted.text }))
     );
   }
 

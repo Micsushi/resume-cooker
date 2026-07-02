@@ -112,7 +112,7 @@ resume-cooker check --resume path/to/resume.tex --jd path/to/job.txt --out repor
 resume-cooker compare --before source.tex --after tailored.tex --pdf tailored.pdf --jd job.txt --out postflight.json
 ```
 
-Current npm scaffolds:
+Current npm commands:
 
 ```bash
 npm run check:local

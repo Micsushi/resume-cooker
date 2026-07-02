@@ -16,13 +16,17 @@ export async function extractPdfText({
   await mkdir(dirname(outPath), { recursive: true });
 
   if (await commandExistsImpl("pdftotext")) {
-    await runCommandImpl("pdftotext", ["-layout", pdfPath, outPath], { quiet: true });
-    return {
-      tool: "pdftotext",
-      path: outPath,
-      text: await readFile(outPath, "utf8"),
-      contentLeftMachine: false
-    };
+    try {
+      await runCommandImpl("pdftotext", ["-layout", pdfPath, outPath], { quiet: true });
+      return {
+        tool: "pdftotext",
+        path: outPath,
+        text: await readFile(outPath, "utf8"),
+        contentLeftMachine: false
+      };
+    } catch {
+      // Fall through to Docker when a stale PATH entry or broken install is detected.
+    }
   }
 
   if (await commandExistsImpl("docker")) {
@@ -57,6 +61,82 @@ export async function extractPdfText({
   throw new Error("No PDF text extractor found. Install pdftotext/poppler or Docker.");
 }
 
+export async function checkPdfPageLimit({
+  pdf,
+  maxPages = 1,
+  commandExistsImpl = commandExists,
+  runCommandImpl = runCommand
+}) {
+  const result = await countPdfPages({ pdf, commandExistsImpl, runCommandImpl });
+  if (!result.available) {
+    return createCheck({
+      id: "pdf_page_count_unavailable",
+      category: "pdf_text_layer",
+      severity: "medium",
+      status: "warning",
+      evidence: `Could not count PDF pages: ${result.reason}.`,
+      suggestedFix:
+        "Install pdfinfo/poppler or start Docker before treating page-limit checks as complete."
+    });
+  }
+
+  return createCheck({
+    id: "pdf_page_limit",
+    category: "pdf_text_layer",
+    severity: "blocker",
+    status: result.pages <= maxPages ? "pass" : "fail",
+    evidence:
+      result.pages <= maxPages
+        ? `PDF is ${result.pages} page(s), within the ${maxPages}-page limit.`
+        : `PDF is ${result.pages} page(s), exceeding the ${maxPages}-page limit.`,
+    suggestedFix:
+      result.pages <= maxPages
+        ? ""
+        : "Tighten content or layout until the resume fits on one page.",
+    metadata: { pages: result.pages, max_pages: maxPages, tool: result.tool }
+  });
+}
+
+export async function countPdfPages({
+  pdf,
+  commandExistsImpl = commandExists,
+  runCommandImpl = runCommand
+}) {
+  const pdfPath = resolve(getRepoRoot(), pdf);
+
+  if (await commandExistsImpl("pdfinfo")) {
+    try {
+      const result = await runCommandImpl("pdfinfo", [pdfPath], { quiet: true });
+      return parsePdfInfo(result.stdout, "pdfinfo");
+    } catch {
+      // Fall through to Docker when a stale PATH entry or broken install is detected.
+    }
+  }
+
+  if (await commandExistsImpl("docker")) {
+    const repoRoot = getRepoRoot().replaceAll("\\", "/");
+    const dockerPdf = pdfPath.replaceAll("\\", "/").replace(repoRoot, "/workdir");
+    const result = await runCommandImpl(
+      "docker",
+      [
+        "run",
+        "--rm",
+        "-v",
+        `${repoRoot}:/workdir`,
+        "-w",
+        "/workdir",
+        "minidocks/poppler",
+        "pdfinfo",
+        dockerPdf
+      ],
+      { quiet: true }
+    );
+    return parsePdfInfo(result.stdout, "docker:pdfinfo");
+  }
+
+  return { available: false, reason: "pdfinfo/poppler not found" };
+}
+
 export async function analyzeExtractedTextFile(path, options = {}) {
   const fullPath = resolve(getRepoRoot(), path);
   return analyzeExtractedText(await readFile(fullPath, "utf8"), options);
@@ -72,19 +152,6 @@ export function analyzeExtractedText(text, options = {}) {
   checks.push(...checkSectionPresenceAndOrder(normalized, sections));
   checks.push(...checkCriticalTerms(normalized, criticalTerms));
   checks.push(checkEncodingNoise(normalized));
-
-  if (options.warnPageLimit) {
-    checks.push(
-      createCheck({
-        id: "page_limit_warning_only",
-        category: "pdf_text_layer",
-        severity: "low",
-        status: "warning",
-        evidence: "Page-limit enforcement is warning-only until report semantics are finalized.",
-        suggestedFix: "Decide later whether page count should fail Stage 2 or Stage 3/4 checks."
-      })
-    );
-  }
 
   return checks;
 }
@@ -192,4 +259,10 @@ function normalizeText(text) {
 
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function parsePdfInfo(stdout, tool) {
+  const match = stdout.match(/^Pages:\s*(\d+)\s*$/im);
+  if (!match) return { available: false, reason: `${tool} output did not include Pages` };
+  return { available: true, tool, pages: Number(match[1]) };
 }

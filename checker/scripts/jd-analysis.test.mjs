@@ -11,7 +11,7 @@ test("extractSignalTerms finds technical and role signals", () => {
 
 test("analyzeJobDescriptionText reports missing grounded terms as warnings", () => {
   const checks = analyzeJobDescriptionText("Backend engineer with Kubernetes and PostgreSQL", "");
-  const coverage = checks.find((check) => check.id === "jd_keyword_coverage_scaffold");
+  const coverage = checks.find((check) => check.id === "jd_keyword_coverage");
 
   assert.equal(coverage.status, "warning");
   assert.ok(coverage.metadata.missing_terms.includes("Kubernetes"));

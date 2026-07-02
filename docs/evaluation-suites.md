@@ -34,11 +34,15 @@ Expected command shape:
 resume-cooker check --suite local --resume resume/source/current.tex
 ```
 
-Current npm scaffold:
+Current npm command:
 
 ```bash
 npm run check:local
+npm run check:local:ats
 ```
+
+The ATS command targets `resume/source/ats.tex`, builds `resume/output/ats.pdf`, extracts text, and
+hard-fails `pdf_page_limit` if the produced PDF is over one page.
 
 ### API Suite
 
@@ -58,14 +62,35 @@ Expected command shape:
 resume-cooker check --suite api --resume resume/source/current.tex --jd fixtures/software_engineering_intern_jd.txt
 ```
 
-Current npm scaffold:
+Current npm command:
 
 ```bash
 npm run check:api
 ```
 
-The API scaffold does not send content anywhere. It reports a warning until explicit provider,
-privacy, and cost controls are implemented.
+The API suite does not send content anywhere unless both the API suite and explicit environment
+configuration are present. Supported providers are `openrouter` and `anthropic`.
+
+PowerShell examples:
+
+```powershell
+$env:RESUME_COOKER_ALLOW_API = "true"
+$env:OPENROUTER_API_KEY = "..."
+npm run check:api
+```
+
+```powershell
+$env:RESUME_COOKER_ALLOW_API = "true"
+$env:RESUME_COOKER_API_PROVIDER = "anthropic"
+$env:ANTHROPIC_API_KEY = "..."
+npm run check:api
+```
+
+Optional settings:
+
+- `RESUME_COOKER_API_MODEL`: provider model name.
+- `RESUME_COOKER_API_TIMEOUT_MS`: request timeout in milliseconds.
+- `OPENROUTER_SITE_URL` and `OPENROUTER_SITE_NAME`: optional OpenRouter attribution headers.
 
 ### Full Suite
 
@@ -77,13 +102,14 @@ Expected command shape:
 resume-cooker check --suite full --resume resume/source/current.tex --jd fixtures/software_engineering_intern_jd.txt
 ```
 
-Current npm scaffold:
+Current npm command:
 
 ```bash
 npm run check:full
 ```
 
-Future implementation should run independent checks in parallel where possible:
+The full suite runs independent local and API reports together. Independent checks should continue
+to run in parallel where possible:
 
 - PDF extraction can run alongside local parser setup checks.
 - Local model review can run alongside API review.
@@ -91,14 +117,18 @@ Future implementation should run independent checks in parallel where possible:
 
 ## Provider Configuration
 
-Future provider config should support:
+Provider config supports:
 
 - `none`: no model calls.
-- `local`: local model only.
-- `openai`, `anthropic`, `gemini`, or other API providers.
-- Per-provider model names.
-- Per-provider timeout and retry policy.
-- Explicit confirmation that private resume/JD content may leave the machine.
+- `openrouter`: OpenRouter chat-completions adapter, default when
+  `RESUME_COOKER_ALLOW_API=true`.
+- `anthropic`: Anthropic messages adapter.
+- Per-provider model names through `RESUME_COOKER_API_MODEL`.
+- Provider timeout through `RESUME_COOKER_API_TIMEOUT_MS`.
+- Input size cap through `RESUME_COOKER_API_MAX_INPUT_CHARS`, default `24000`.
+- Output token cap through `RESUME_COOKER_API_MAX_TOKENS`, default `1024`.
+- Explicit confirmation that private resume/JD content may leave the machine through
+  `RESUME_COOKER_ALLOW_API=true`.
 
 API checks should require explicit configuration. They should not run just because an API key exists in the environment.
 

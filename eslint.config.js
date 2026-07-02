@@ -23,7 +23,10 @@ export default [
         console: "readonly",
         process: "readonly",
         URL: "readonly",
-        setInterval: "readonly"
+        AbortController: "readonly",
+        clearTimeout: "readonly",
+        setInterval: "readonly",
+        setTimeout: "readonly"
       }
     }
   }

@@ -67,18 +67,22 @@ export function runCommand(command, args, options = {}) {
   });
 }
 
-async function detectEngine(requested) {
+export async function detectEngine(requested, commandExistsImpl = commandExists) {
   if (requested && requested !== "auto") return requested;
-  if (await commandExists("latexmk")) return "latexmk";
-  if (await commandExists("pdflatex")) return "pdflatex";
-  if (await commandExists("docker")) return "docker";
+  if (await commandExistsImpl("latexmk")) return "latexmk";
+  if (await commandExistsImpl("pdflatex")) return "pdflatex";
+  if (await commandExistsImpl("docker")) return "docker";
   return "missing";
 }
 
 export async function buildPdf(options = {}) {
   const source = resolve(repoRoot, options.source || "resume/source/current.tex");
   const outDir = resolve(repoRoot, options.outDir || "resume/output");
-  const engine = await detectEngine(options.engine || "auto");
+  const runCommandImpl = options.runCommand || runCommand;
+  const engine = await detectEngine(
+    options.engine || "auto",
+    options.commandExists || commandExists
+  );
   const jobName = basename(source, extname(source));
   const pdfPath = join(outDir, `${jobName}.pdf`);
 
@@ -89,7 +93,7 @@ export async function buildPdf(options = {}) {
   }
 
   if (engine === "latexmk") {
-    await runCommand("latexmk", [
+    await runCommandImpl("latexmk", [
       "-pdf",
       "-interaction=nonstopmode",
       "-halt-on-error",
@@ -97,14 +101,14 @@ export async function buildPdf(options = {}) {
       source
     ]);
   } else if (engine === "pdflatex") {
-    await runCommand("pdflatex", [
+    await runCommandImpl("pdflatex", [
       "-interaction=nonstopmode",
       "-halt-on-error",
       `-output-directory=${outDir}`,
       source
     ]);
   } else if (engine === "docker") {
-    await runCommand("docker", [
+    await runCommandImpl("docker", [
       "run",
       "--rm",
       "-v",

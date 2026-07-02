@@ -112,6 +112,17 @@ resume-cooker check --resume path/to/resume.tex --jd path/to/job.txt --out repor
 resume-cooker compare --before source.tex --after tailored.tex --pdf tailored.pdf --jd job.txt --out postflight.json
 ```
 
+Current npm scaffolds:
+
+```bash
+npm run check:local
+npm run check:full
+npm run compare
+```
+
+These commands already emit the stable `pass`, `pass_with_warnings`, and `fail` status shape under
+`.runtime/reports/`. They are not yet a packaged `resume-cooker` binary.
+
 Hunt can later shell out to those commands or call a tiny HTTP service. That keeps Resume Cooker testable independently and avoids coupling it to Hunt's DB schema.
 
 ## Model And API Boundary
@@ -180,11 +191,22 @@ Resume Cooker should add lower-level resume quality flags, such as:
 
 When integrated later, Hunt can keep Fletcher flags and Resume Cooker flags separate. Fletcher flags explain tailoring confidence. Resume Cooker flags explain resume artifact quality.
 
+## Resolved Defaults
+
+These were previously open questions but have clear answers and are no longer worth asking:
+
+- Private PDFs are never uploaded as GitHub Action artifacts. CI stays lightweight and never publishes private resume content.
+- Reports and extracted text are ignored/private, stored only under runtime output (`.runtime/`), not committed.
+- There is no static must-preserve keyword list as the primary integrity mechanism. Text integrity is judged dynamically (see the AI/API question below); deterministic checks stay limited to empty text, encoding noise, and section presence.
+- Page-limit checks warn only for now; whether they become a hard failure is revisited when Stage 3/4 report semantics are stable.
+- Contact fields are validated exactly against the source locally but never printed; the external contract only reports presence/parseability.
+
 ## Open Design Questions
 
-- Should Resume Cooker generate the ATS-safe resume, or only verify one exists?
-- Should pre-C2 failure block C2 automatically, or only warn?
-- What exact critical keyword list should be global versus role-specific?
-- Should post-C2 compare against raw LaTeX, parsed structured resume JSON, or both?
-- Should private PDFs ever be uploaded as GitHub Action artifacts?
-- Should reports be committed, ignored, or stored only in runtime output?
+Genuine feature/design forks where more than one path is reasonable:
+
+- Should Resume Cooker generate the ATS-safe resume variant, or only verify that a good one exists? (Also gates Stage 3 scope.)
+- Should a pre-C2 failure hard-block Fletcher automatically, or only warn and let the caller decide?
+- Should post-C2 comparison run against the raw LaTeX, the parsed structured resume JSON, or both? (Affects the compare architecture.)
+- Which tester tool under `testers/` should be wrapped first?
+- How far should AI/API text-integrity review go, and under which provider and cost gate? Desired direction is dynamic model inspection of extracted text (likely OpenRouter-backed) behind an explicit API/full-suite opt-in, but scope, provider, and cost controls are open.

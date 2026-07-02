@@ -78,7 +78,7 @@ const server = createServer(async (req, res) => {
 });
 
 await compilePreview();
-server.listen(port, () => {
+server.listen(port, "127.0.0.1", () => {
   console.log(`Resume Cooker preview: http://127.0.0.1:${port}`);
   console.log(`Source: ${source}`);
 });
@@ -89,16 +89,22 @@ function sendJson(res, body, status = 200) {
 }
 
 function sendFile(res, path, contentType) {
-  try {
+  const stream = createReadStream(path);
+  stream.on("error", () => {
+    if (res.headersSent) {
+      res.destroy();
+      return;
+    }
+    res.writeHead(404);
+    res.end("Not found");
+  });
+  stream.once("open", () => {
     res.writeHead(200, {
       "content-type": contentType || contentTypeFor(path),
       "cache-control": "no-store"
     });
-    createReadStream(path).pipe(res);
-  } catch {
-    res.writeHead(404);
-    res.end("Not found");
-  }
+    stream.pipe(res);
+  });
 }
 
 function contentTypeFor(path) {

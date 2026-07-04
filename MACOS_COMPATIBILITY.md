@@ -24,42 +24,22 @@ This was audited from Ubuntu, so no native macOS run was executed.
 - PDF generation with MacTeX/BasicTeX or Docker.
 - Poppler-backed text extraction after installing Poppler.
 
-## macOS Blockers
+## Changes Made (2026-07-04)
+
+- **Code fix:** the tester runner (`checker/scripts/tester-runner.mjs`) now detects
+  the POSIX virtualenv interpreter `.venv/bin/python` (used on macOS and Linux) in
+  addition to the Windows path. This is shared cross-platform code and was verified
+  building/running on Linux; a native macOS run is still recommended.
+- **Docs:** README Requirements section documents Node 22+ and the optional
+  Homebrew TeX/Poppler tooling (`brew install --cask mactex-no-gui`,
+  `brew install poppler`).
+
+## Remaining (environmental, not code)
 
 - Host needs Node 22+ and npm.
-- PDF build needs one of:
-  - `latexmk`
-  - `pdflatex`
-  - Docker with `texlive/texlive`
-- PDF text/page checks need Poppler tools:
-  - `pdftotext`
-  - `pdfinfo`
-- Tester runner should detect POSIX venv paths like `.venv/bin/python`.
-
-## Likely Changes Needed
-
-- Add macOS quickstart:
-
-```bash
-npm ci
-npm test
-npm run check:tools
-```
-
-- Document optional Homebrew tools:
-
-```bash
-brew install --cask mactex-no-gui
-brew install poppler
-```
-
-or a lighter BasicTeX path if preferred.
-
-- Update tester runner to detect:
-
-```text
-testers/ResumeParser/.venv/bin/python
-```
+- PDF build needs `latexmk`/`pdflatex` (MacTeX/BasicTeX) or Docker with `texlive/texlive`.
+- PDF text/page checks need Poppler (`pdftotext`, `pdfinfo`).
+- No native macOS run was performed in this audit (audited from Linux).
 
 ## Suggested macOS Smoke Path
 

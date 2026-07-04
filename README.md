@@ -31,6 +31,20 @@ Current implementation focus:
 2. Expand deterministic local checks for source quality, PDF text layers, JD matching, and post-tailoring regressions.
 3. Keep external API/model review explicit opt-in because resume and JD content are private.
 
+## Requirements
+
+Works on Linux, macOS, and Windows.
+
+- **Node.js 22+ and npm** — required for all `npm` scripts, tests, and deterministic checks.
+- **Optional, only for PDF generation and PDF-based checks** (`build:pdf`, `check:local:ats`,
+  `check:testers`): a TeX engine plus Poppler tools. On Debian/Ubuntu:
+  ```bash
+  sudo apt install texlive-latex-base texlive-latex-extra latexmk poppler-utils
+  ```
+  On macOS: `brew install --cask mactex-no-gui` (or `basictex`) and `brew install poppler`.
+  `npm run check:tools` reports which engines are present; the non-PDF checks and the
+  test suite run without any TeX tooling.
+
 ## Quick Commands
 
 ```bash

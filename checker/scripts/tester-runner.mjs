@@ -119,8 +119,13 @@ async function runResumeParser(options) {
       "ResumeParser needs --pdf pointing to an existing PDF."
     );
   }
-  const venvPython = resolve(cwd, ".venv/Scripts/python.exe");
-  const python = existsSync(venvPython)
+  // Prefer a project virtualenv if present. Windows puts the interpreter under
+  // .venv/Scripts/python.exe; Linux and macOS use .venv/bin/python.
+  const venvPython = [
+    resolve(cwd, ".venv/Scripts/python.exe"),
+    resolve(cwd, ".venv/bin/python")
+  ].find((candidate) => existsSync(candidate));
+  const python = venvPython
     ? venvPython
     : (await commandExists("python"))
       ? "python"

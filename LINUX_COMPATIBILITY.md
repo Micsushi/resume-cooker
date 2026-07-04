@@ -33,37 +33,23 @@ Host caveat: Node and npm are not installed on this Ubuntu machine.
 - Preview/build scripts after Node install.
 - API checks when explicitly enabled with API keys.
 
-## Linux Blockers
+## Changes Made (2026-07-04)
 
-- Host needs Node 22+ and npm.
-- PDF build needs one of:
-  - `latexmk`
-  - `pdflatex`
-  - Docker with a TeX image
-- PDF text/page checks need Poppler tools such as `pdftotext` and `pdfinfo`.
-- Tester runner currently checks Windows `.venv/Scripts/python.exe` before global Python; it should also check `.venv/bin/python`.
+- **Code fix:** `checker/scripts/tester-runner.mjs` now detects the POSIX virtualenv
+  interpreter (`.venv/bin/python`) as well as the Windows one
+  (`.venv/Scripts/python.exe`), falling back to global `python`/`python3`.
+- **Docs:** README now has a Requirements section documenting Node 22+ and the
+  optional TeX/Poppler tooling for PDF steps (`apt install texlive-* latexmk
+poppler-utils`, or `mactex`/`poppler` on macOS).
 
-## Likely Changes Needed
+Verified on Linux (node:22 container): `npm ci`, `npm run format:check`,
+`npm run lint`, `npm test` (**40 passed**), and `npm run check:tools` all succeed.
 
-- Add Ubuntu quickstart docs:
+## Remaining (environmental, not code)
 
-```bash
-npm ci
-npm test
-npm run check:tools
-```
-
-- Document optional PDF tooling:
-
-```bash
-sudo apt install texlive-latex-base texlive-latex-extra latexmk poppler-utils
-```
-
-- Update tester runner to detect Linux virtualenv Python at:
-
-```text
-testers/ResumeParser/.venv/bin/python
-```
+- PDF build still needs a TeX engine (`latexmk`/`pdflatex`) or Docker with a TeX image.
+- PDF text/page checks still need Poppler (`pdftotext`, `pdfinfo`).
+  These are optional host tools; the test suite and non-PDF checks run without them.
 
 ## Suggested Ubuntu Smoke Path
 

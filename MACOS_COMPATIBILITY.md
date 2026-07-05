@@ -1,15 +1,15 @@
 # macOS Compatibility Notes
 
-Audit date: 2026-07-03
+Audit date: 2026-07-04
 
 ## Status
 
-Likely compatible. The root Node scripts are mostly platform-neutral, and PDF generation can use native TeX tools or Docker on macOS.
-
-This was audited from Ubuntu, so no native macOS run was executed.
+Compatible for root Node scripts on macOS. PDF generation can use native TeX
+tools or Docker on macOS.
 
 ## What Was Checked
 
+- Native macOS root Node checks.
 - Static scan of PDF build scripts and tool detection.
 - Linux audit ran Node 22 container checks:
   - `npm ci`
@@ -39,7 +39,8 @@ This was audited from Ubuntu, so no native macOS run was executed.
 - Host needs Node 22+ and npm.
 - PDF build needs `latexmk`/`pdflatex` (MacTeX/BasicTeX) or Docker with `texlive/texlive`.
 - PDF text/page checks need Poppler (`pdftotext`, `pdfinfo`).
-- No native macOS run was performed in this audit (audited from Linux).
+- Native macOS root checks passed in this audit. PDF checks still depend on the
+  optional host tools above.
 
 ## Suggested macOS Smoke Path
 

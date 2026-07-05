@@ -197,7 +197,7 @@ These were previously open questions but have clear answers and are no longer wo
 
 - Private PDFs are never uploaded as GitHub Action artifacts. CI stays lightweight and never publishes private resume content.
 - Reports and extracted text are ignored/private, stored only under runtime output (`.runtime/`), not committed.
-- There is no static must-preserve keyword list as the primary integrity mechanism. Text integrity is judged dynamically (see the AI/API question below); deterministic checks stay limited to empty text, encoding noise, and section presence.
+- There is no static must-preserve keyword list as the primary integrity mechanism. Text integrity is judged dynamically when optional external review is enabled; deterministic checks stay limited to empty text, encoding noise, and section presence.
 - Page-limit checks warn only for now; whether they become a hard failure is revisited when Stage 3/4 report semantics are stable.
 - Contact fields are validated exactly against the source locally but never printed; the external contract only reports presence/parseability.
 
@@ -209,4 +209,4 @@ Genuine feature/design forks where more than one path is reasonable:
 - Should a pre-C2 failure hard-block Fletcher automatically, or only warn and let the caller decide?
 - Should post-C2 comparison run against the raw LaTeX, the parsed structured resume JSON, or both? (Affects the compare architecture.)
 - Which tester tool under `testers/` should be wrapped first?
-- How far should AI/API text-integrity review go, and under which provider and cost gate? Desired direction is dynamic model inspection of extracted text (likely OpenRouter-backed) behind an explicit API/full-suite opt-in, but scope, provider, and cost controls are open.
+- How far should optional model-based text-integrity review go, and under which provider and cost gate? Desired direction is dynamic inspection of extracted text behind an explicit API/full-suite opt-in, but scope, provider, and cost controls are open.

@@ -28,8 +28,8 @@ tools or Docker on macOS.
 
 - **Code fix:** the tester runner (`checker/scripts/tester-runner.mjs`) now detects
   the POSIX virtualenv interpreter `.venv/bin/python` (used on macOS and Linux) in
-  addition to the Windows path. This is shared cross-platform code and was verified
-  building/running on Linux; a native macOS run is still recommended.
+  addition to the Windows path. Native root checks pass; a real ResumeParser run still
+  requires its optional environment and a generated PDF.
 - **Docs:** README Requirements section documents Node 22+ and the optional
   Homebrew TeX/Poppler tooling (`brew install --cask mactex-no-gui`,
   `brew install poppler`).

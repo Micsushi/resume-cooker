@@ -45,15 +45,21 @@ Manual checks:
 - Confirm bullets appear under the right role.
 - Confirm links display as useful plain text.
 
-## Future Automation
+## Current Automation
 
-Good future repo checks:
+Current root-owned checks can:
 
 - Build PDF from LaTeX.
 - Extract PDF text.
-- Fail if critical keywords are missing.
+- Report configured critical keywords missing from extracted text.
+- Hard-fail a known PDF page count above the configured limit.
+- Check expected section presence and order.
+- Compare baseline extraction with ATS-Checker when its parser is available.
 - Save extracted text under `resume/output/`.
 - Run one or more parser/scoring tools against a sample job description.
+
+The tester integrations remain partial. Detailed completion work and prerequisites are defined in
+[`RC-003`](tasks/RC-003-tester-integrations.md).
 
 ## Tool Inventory
 

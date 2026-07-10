@@ -8,7 +8,8 @@ Resume Cooker can use both local checks and API-backed checks. The key boundary 
 - API checks must be opt-in.
 - Reports must say whether resume or JD content left the machine.
 - Local and API results should be comparable but not mixed silently.
-- A full run may execute both suites, ideally in parallel once implemented.
+- A full run executes the local and API suites in parallel; API review still remains disabled unless
+  explicitly enabled.
 - C2 should consume Resume Cooker results later, not inherit Resume Cooker's provider dependencies.
 
 ## Suite Types

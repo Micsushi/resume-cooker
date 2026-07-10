@@ -15,6 +15,8 @@ Public sample project for resume PDF generation, local checks, and ATS parsing e
 ## Planning Docs
 
 - `docs/roadmap.md`: staged roadmap from local foundation through future integration.
+- `docs/tasks/README.md`: pickup-ready implementation backlog, dependency graph, task status model,
+  and handoff requirements.
 - `docs/resume-quality-criteria.md`: criteria list for parseability, ATS safety, evidence quality, keyword coverage, and post-tailoring regressions.
 - `docs/hunt-c2-integration-notes.md`: notes on how Resume Cooker can later run before and after Hunt C2/Fletcher.
 - `docs/evaluation-suites.md`: planned separation between local-only checks, optional API checks, and full checks.
@@ -120,8 +122,9 @@ Optional API settings:
 - `RESUME_COOKER_API_MAX_TOKENS`: provider output cap; defaults to `1024`.
 - `OPENROUTER_SITE_URL` and `OPENROUTER_SITE_NAME`: optional OpenRouter app attribution headers.
 
-Current non-blockers that remain warning-level until later answers are final:
+## Remaining Work
 
-- Exact contact-value validation versus parseable contact-field validation in every report context.
-- Full tester apps require their own dependency installation before `npm run check:testers` can run
-  more than smoke/parser checks.
+The remaining work is split into scoped task specifications under [`docs/tasks/`](docs/tasks/README.md).
+Each task names its prerequisites, downstream dependencies, non-goals, implementation slices,
+acceptance criteria, verification commands, failure modes, and required handoff evidence. Start with
+the backlog index rather than inferring task order from roadmap stage numbers.

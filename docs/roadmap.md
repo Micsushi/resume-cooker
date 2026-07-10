@@ -2,6 +2,11 @@
 
 Resume Cooker stays standalone first. Its job is to make a resume locally visible, reproducible, and objectively testable before any downstream tailoring system changes it.
 
+Detailed remaining work lives in [`docs/tasks/README.md`](tasks/README.md). The task backlog is the
+source of truth for durable scope, architectural dependencies, acceptance criteria, and handoff
+requirements. Live readiness, priorities, dated blockers, and assignments remain outside the public
+repository. This roadmap remains the higher-level product sequence.
+
 This roadmap is intentionally grouped into four implementation stages. Older long-range ideas are folded into these stages so each stage is large enough to test meaningfully without turning the project into many tiny milestones.
 
 ## Stage 1: Local Foundation

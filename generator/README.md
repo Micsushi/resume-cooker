@@ -86,4 +86,6 @@ This repo currently does not vendor a TeX distribution. Install one of:
 - a minimal `pdflatex` setup that supports the resume packages
 - Docker with the daemon running, so the generator can use the `texlive/texlive` image
 
-Future work can add a pinned Docker image or dev container for fully reproducible builds.
+The current Docker image tags are not pinned. Reproducibility and macOS end-to-end verification are
+tracked in [`RC-002`](../docs/tasks/RC-002-macos-pdf-pipeline.md); truthful Docker readiness is
+tracked in [`RC-001`](../docs/tasks/RC-001-toolchain-detection.md).

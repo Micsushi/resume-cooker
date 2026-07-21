@@ -82,7 +82,7 @@ Potential flags:
 
 ## 5. Evidence And Specificity
 
-Purpose: make claims credible and useful to both recruiters and AI filters.
+Purpose: make claims credible and useful to recruiters and automated resume filters.
 
 Criteria:
 

@@ -1,20 +1,22 @@
 # Resume Cooker
 
-Private source-of-truth repo for Michael Shi's resume, local PDF generation, and ATS parsing experiments.
+Public sample project for resume PDF generation, local checks, and ATS parsing experiments.
 
 ## Layout
 
-- `resume/source/` stores the current LaTeX resume source.
+- `resume/source/` stores sample LaTeX resume sources. Keep personal resume files outside Git.
 - `resume/output/` is reserved for generated PDFs and extracted text outputs.
 - `generator/` stores the local LaTeX-to-PDF build and preview workflow.
 - `checker/` stores staged local/API/preflight/postflight report code.
 - `testers/` stores local snapshots of ATS/resume testing tools.
-- `fixtures/` stores sample job descriptions and extracted resume text used for tests.
+- `fixtures/` stores sample job descriptions and extracted resume text used by tests.
 - `docs/` stores notes about ATS testing methods and repo decisions.
 
 ## Planning Docs
 
-- `docs/roadmap.md`: four-stage public roadmap from local foundation through future integration.
+- `docs/roadmap.md`: staged roadmap from local foundation through future integration.
+- `docs/tasks/README.md`: pickup-ready implementation backlog, dependency graph, task status model,
+  and handoff requirements.
 - `docs/resume-quality-criteria.md`: criteria list for parseability, ATS safety, evidence quality, keyword coverage, and post-tailoring regressions.
 - `docs/hunt-c2-integration-notes.md`: notes on how Resume Cooker can later run before and after Hunt C2/Fletcher.
 - `docs/evaluation-suites.md`: planned separation between local-only checks, optional API checks, and full checks.
@@ -23,13 +25,27 @@ Private source-of-truth repo for Michael Shi's resume, local PDF generation, and
 
 ## Current State
 
-The repo now preserves the current resume content, tester projects, and a lightweight generator/preview workflow without redesigning the LaTeX.
+The repo now preserves sample resume content, tester projects, and a lightweight generator/preview workflow without redesigning the LaTeX.
 
 Current implementation focus:
 
 1. Keep Stage 1 local foundation healthy: preview behavior, root formatting, linting, tests, lightweight CI, and docs.
 2. Expand deterministic local checks for source quality, PDF text layers, JD matching, and post-tailoring regressions.
-3. Keep external API/model review explicit opt-in because resume and JD content are private.
+3. Keep external API/model review explicit opt-in because resume and JD content may be private.
+
+## Requirements
+
+Works on Linux, macOS, and Windows.
+
+- **Node.js 22+ and npm**: required for all `npm` scripts, tests, and deterministic checks.
+- **Optional, only for PDF generation and PDF-based checks** (`build:pdf`, `check:local:ats`,
+  `check:testers`): a TeX engine plus Poppler tools. On Debian/Ubuntu:
+  ```bash
+  sudo apt install texlive-latex-base texlive-latex-extra latexmk poppler-utils
+  ```
+  On macOS: `brew install --cask mactex-no-gui` (or `basictex`) and `brew install poppler`.
+  `npm run check:tools` reports which engines are present; the non-PDF checks and the
+  test suite run without any TeX tooling.
 
 ## Quick Commands
 
@@ -106,8 +122,9 @@ Optional API settings:
 - `RESUME_COOKER_API_MAX_TOKENS`: provider output cap; defaults to `1024`.
 - `OPENROUTER_SITE_URL` and `OPENROUTER_SITE_NAME`: optional OpenRouter app attribution headers.
 
-Current non-blockers that remain warning-level until later answers are final:
+## Remaining Work
 
-- Exact contact-value validation versus parseable contact-field validation in every report context.
-- Full tester apps require their own dependency installation before `npm run check:testers` can run
-  more than smoke/parser checks.
+The remaining work is split into scoped task specifications under [`docs/tasks/`](docs/tasks/README.md).
+Each task names its prerequisites, downstream dependencies, non-goals, implementation slices,
+acceptance criteria, verification commands, failure modes, and required handoff evidence. Start with
+the backlog index rather than inferring task order from roadmap stage numbers.

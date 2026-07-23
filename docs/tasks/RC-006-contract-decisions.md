@@ -1,10 +1,18 @@
 # RC-006: Resolve Contracts And Align Documentation
 
+**Planning level:** Documentation and contract epic. Execute through these bounded work packages:
+
+- [RC-006.1](RC-006.1-publish-product-decisions.md): publish accepted D1-D8 decisions.
+- [RC-006.2](RC-006.2-documentation-contract-audit.md): align public documentation.
+- [RC-006.3](RC-006.3-release-dependency-gates.md): validate package and stage readiness gates.
+
+Accepted contracts live in [`docs/product-decisions.md`](../product-decisions.md). Product selection
+is complete; publication alignment and dependency validation remain.
+
 ## Objective
 
-Resolve the remaining product and integration forks, record decisions in one durable place, and
-make roadmap, README, compatibility, and Hunt integration documentation describe the same current
-behavior.
+Publish the approved product and integration contracts, then make roadmap, README, compatibility,
+task, tester, UI, and Hunt documentation describe the same current and planned behavior.
 
 ## Why This Exists
 
@@ -15,7 +23,8 @@ Implementation has advanced faster than some planning language. Examples:
 - An ATS-safe source exists, but documentation still asks whether Resume Cooker should generate or
   merely verify an ATS-safe variant.
 - `compare` accepts a PDF path in metadata but does not inspect it.
-- Skip, warning, and hard-block policy for downstream Hunt/Fletcher remains unresolved.
+- Skip, warning, and hard-block policy for downstream Hunt/Fletcher was previously unresolved and is
+  now fixed by D3/D5/D7.
 - The tester priority and model-review scope remain open.
 
 These are contract questions, not wording-only cleanup. Downstream tasks must not infer answers.
@@ -24,8 +33,8 @@ These are contract questions, not wording-only cleanup. Downstream tasks must no
 
 ### In Scope
 
-- Decide every question listed below.
-- Record decision, rationale, alternatives, consequences, and revisit trigger.
+- Publish every approved decision listed below.
+- Record decision, rationale, consequences, implementation follow-ups, and revisit trigger.
 - Update all public docs to match current implementation and chosen target behavior.
 - Mark behavior as current, planned, or deferred explicitly.
 - Define report and exit-code semantics used by RC-004, RC-007, and RC-008.
@@ -43,8 +52,8 @@ These are contract questions, not wording-only cleanup. Downstream tasks must no
 
 ### Blocked By
 
-The task is implementation-ready, but final completion requires a product owner answer for each
-decision below. Research and concrete recommendations can proceed first.
+Product answers were approved 2026-07-22. Completion now depends on publishing the records, auditing
+documentation, and validating downstream package gates.
 
 ### Blocks
 
@@ -54,106 +63,27 @@ decision below. Research and concrete recommendations can proceed first.
 - RC-009 ownership of resume generation and edit behavior.
 - Final tester and API scope claims.
 
-## Required Decisions
+## Accepted Decisions
 
-### D1: ATS Variant Ownership
+- [D1](../product-decisions.md#d1-ats-variant-ownership): hybrid ATS ownership; caller source is
+  authoritative.
+- [D2](../product-decisions.md#d2-page-limit-severity): measurable ATS over-limit is a blocker;
+  unavailable count differs between normal and strict profiles.
+- [D3](../product-decisions.md#d3-pre-c2-enforcement): Hunt owns enforcement; fail blocks by default
+  with audited override.
+- [D4](../product-decisions.md#d4-postflight-inputs): structured facts, source preservation, and PDF
+  artifact checks have explicit precedence.
+- [D5](../product-decisions.md#d5-tester-priority-and-requiredness): ATS-Checker is first and strict-
+  profile required; normal local tester dependencies remain optional.
+- [D6](../product-decisions.md#d6-api-review-scope): OpenRouter/Anthropic review is explicit,
+  bounded, advisory, and privacy-labeled.
+- [D7](../product-decisions.md#d7-cli-and-report-compatibility): stable commands, schema versions,
+  streams, and exit codes are fixed.
+- [D8](../product-decisions.md#d8-ui-ownership-boundary): UI v1 edits approved raw-LaTeX files and
+  does not own structured data or rewriting.
 
-Choose one:
-
-- Resume Cooker owns and may generate/maintain an ATS-safe variant.
-- Resume Cooker only validates a caller-provided ATS-safe variant.
-- Hybrid: it ships a sample/optional generator but treats caller input as authoritative.
-
-Define source of truth, artifact naming, whether generation may alter content, and how divergence
-from the visual resume is detected.
-
-### D2: Page-Limit Severity
-
-Choose whether exceeding configured pages is:
-
-- blocker failure;
-- warning by default with strict mode;
-- policy supplied by the caller.
-
-Define behavior when page count is unavailable. Update code or create a follow-up implementation
-task; do not leave docs inconsistent.
-
-### D3: Pre-C2 Enforcement
-
-Choose whether preflight `fail`:
-
-- hard-blocks Fletcher;
-- warns and allows an override;
-- only advises while Hunt owns enforcement.
-
-Define override ownership, audit evidence, and what happens to `pass_with_warnings`.
-
-### D4: Postflight Comparison Inputs
-
-Choose authoritative inputs:
-
-- raw LaTeX;
-- parsed structured resume JSON;
-- both, with defined precedence.
-
-Define how PDFs, JDs, profile facts, and Fletcher concern flags supplement the comparison.
-
-### D5: Tester Priority And Requiredness
-
-Choose the first full integration and whether any tester becomes required for a release-quality
-local run. Define skip semantics when optional dependencies are absent.
-
-### D6: API Review Scope
-
-Define:
-
-- supported providers and model policy;
-- allowed review categories;
-- whether dynamic text-integrity review belongs in API mode;
-- default character/token/cost limits;
-- whether API findings can ever hard-block;
-- retention and logging policy.
-
-### D7: CLI And Report Compatibility
-
-Define:
-
-- stable command names;
-- schema versioning;
-- stdout versus stderr contract;
-- JSON output mode;
-- exit codes for pass, warnings, fail, invalid input, and missing optional tools;
-- path representation and cross-platform guarantees.
-
-### D8: UI Ownership Boundary
-
-Define whether the future UI:
-
-- edits raw LaTeX;
-- edits structured resume data;
-- only previews and runs checks;
-- owns generated ATS variants.
-
-This prevents RC-009 from coupling itself to an unstable source model.
-
-## Decision Record Template
-
-```markdown
-### D#: Title
-
-- Status: accepted | rejected | deferred
-- Date:
-- Decision:
-- Context:
-- Alternatives considered:
-- Consequences:
-- Required implementation follow-ups:
-- Documentation updated:
-- Revisit when:
-```
-
-Store durable decisions in a repository document intended for contributors. Do not rely only on a
-chat or machine-local handoff.
+Decision history must remain in the public record. Changes require rationale, compatibility impact,
+follow-up task IDs, and a revisit trigger; chat or private handoff alone is insufficient.
 
 ## Documentation Audit Matrix
 

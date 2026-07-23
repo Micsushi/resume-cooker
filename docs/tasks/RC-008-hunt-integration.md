@@ -1,5 +1,17 @@
 # RC-008: Integrate With Hunt And Fletcher
 
+**Planning level:** Cross-repository epic. Execute through these bounded work packages:
+
+- [RC-008.1](RC-008.1-hunt-surface-inventory.md): evidence-based Hunt/Fletcher inventory.
+- [RC-008.2](RC-008.2-hunt-process-adapter.md): CLI process adapter.
+- [RC-008.3](RC-008.3-hunt-preflight-policy.md): preflight and audited override.
+- [RC-008.4](RC-008.4-hunt-postflight.md): post-Fletcher comparison.
+- [RC-008.5](RC-008.5-hunt-readiness-mapping.md): namespaced flags and C3 readiness.
+- [RC-008.6](RC-008.6-hunt-end-to-end-rollout.md): rollout, failure, override, and rollback proof.
+
+[D3](../product-decisions.md#d3-pre-c2-enforcement) assigns policy to Hunt. Integration has not been
+implemented; RC-008.1 prevents invented external file paths.
+
 ## Objective
 
 Call Resume Cooker as a standalone preflight and postflight quality gate around Hunt C2/Fletcher,
@@ -24,7 +36,8 @@ Source resume and optional JD
 - Hunt integration notes identify Fletcher inputs, outputs, and C3 readiness concepts.
 - No packaged Resume Cooker CLI exists yet.
 - No Hunt coordinator invokes Resume Cooker.
-- Enforcement, override, report storage, and flag translation remain unresolved.
+- Enforcement, override, and flag ownership are accepted in D3/D7; their implementation and Hunt
+  retention surface remain incomplete.
 
 ## Scope
 
@@ -100,7 +113,7 @@ RC-005 blocks API-backed integration only. Local-only integration can complete w
 
 ## Enforcement Requirements
 
-RC-006 must define the exact matrix. The implementation must explicitly handle:
+D3 and D7 define default enforcement and exits. Implementation must explicitly handle:
 
 - preflight pass;
 - preflight warnings;

@@ -7,6 +7,10 @@ Audit date: 2026-07-04
 Compatible for root Node scripts on macOS. PDF generation can use native TeX
 tools or Docker on macOS.
 
+**Evidence status:** Node results below are dated audit evidence, not completion of the macOS PDF
+pipeline. RC-002.1 through RC-002.3 require a current real build, page, extraction, parser, preview,
+and cleanup smoke. RC-001 must first make all automatic paths consume truthful capability results.
+
 ## What Was Checked
 
 - Native macOS root Node checks.
@@ -48,7 +52,13 @@ tools or Docker on macOS.
 npm ci
 npm test
 npm run check:tools
-npm run check:local
+npm run check:tools -- --require-pdf-engine
+npm run build:pdf:ats
+npm run check:local:ats
+npm run check:testers
+npm run preview -- --source resume/source/ats.tex
 ```
 
-Run `npm run build:pdf` only after TeX or Docker is available.
+Run artifact commands only after TeX/Poppler or Docker is reported usable. Keep generated PDFs,
+extracted text, and reports ignored. Record exact versions, page count, endpoint results, shutdown,
+and untested alternative runtime under [RC-002](docs/tasks/README.md#rc-002-proven-pdf-pipeline).

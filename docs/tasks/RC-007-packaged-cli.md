@@ -1,5 +1,17 @@
 # RC-007: Package The Standalone CLI
 
+**Planning level:** Epic. Execute through these bounded work packages:
+
+- [RC-007.1](RC-007.1-cli-schema-contract.md): command/schema/exit contract.
+- [RC-007.2](RC-007.2-cli-dispatch-and-validation.md): binary dispatch and validation.
+- [RC-007.3](RC-007.3-cli-tools-build-preview.md): tools/build/preview commands.
+- [RC-007.4](RC-007.4-cli-check-compare-testers.md): check/compare/tester commands.
+- [RC-007.5](RC-007.5-cli-output-and-errors.md): streams, reports, errors, and signals.
+- [RC-007.6](RC-007.6-cli-package-verification.md): package and cross-platform proof.
+
+[D7](../product-decisions.md#d7-cli-and-report-compatibility) fixes command names and exit semantics.
+Current npm scripts are partial product boundaries; no package binary exists.
+
 ## Objective
 
 Expose Resume Cooker's stable behavior through one documented command-line interface that works
@@ -93,16 +105,15 @@ explicit output path and a machine-readable stdout mode.
 
 ### Exit Codes
 
-RC-006 must approve exact numbers. At minimum distinguish:
+Accepted exit codes are:
 
-- successful pass;
-- successful execution with findings/warnings, if warnings are nonzero by policy;
-- quality-gate fail;
-- invalid usage or missing required input;
-- unavailable required capability;
-- internal/unexpected error.
+- `0`: successful `pass` or `pass_with_warnings` execution;
+- `2`: completed quality-gate `fail`;
+- `64`: invalid usage or required input;
+- `69`: unavailable required capability;
+- `70`: internal/unexpected error.
 
-Avoid forcing shell callers to parse prose.
+Shell callers consume report status and exit category rather than prose.
 
 ### Report Versioning
 

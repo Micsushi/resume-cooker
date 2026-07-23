@@ -1,5 +1,14 @@
 # RC-002: End-To-End macOS PDF Pipeline
 
+**Planning level:** Epic. Execute through these bounded work packages:
+
+- [RC-002.1](RC-002.1-macos-runtime.md): establish one reproducible macOS runtime.
+- [RC-002.2](RC-002.2-ats-pdf-pipeline.md): prove build, page, extraction, and parser path.
+- [RC-002.3](RC-002.3-preview-and-artifact-smoke.md): prove preview and artifact separation.
+
+Current evidence: Node-only scaffolds exist; complete macOS artifact evidence is not current. Treat
+epic as blocked on RC-001 and a usable host runtime.
+
 ## Objective
 
 Establish and document one repeatable macOS path that builds the ATS-safe PDF, extracts its text,

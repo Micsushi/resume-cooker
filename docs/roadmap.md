@@ -1,123 +1,180 @@
 # Resume Cooker Roadmap
 
-Resume Cooker stays standalone first. Its job is to make a resume locally visible, reproducible, and objectively testable before any downstream tailoring system changes it.
+Resume Cooker is a standalone local resume build and quality system. It makes source and generated
+artifacts reproducible, checks them before and after tailoring, exposes a versioned process boundary,
+and later supports Hunt/Fletcher and a local editing UI.
 
-Detailed remaining work lives in [`docs/tasks/README.md`](tasks/README.md). The task backlog is the
-source of truth for durable scope, architectural dependencies, acceptance criteria, and handoff
-requirements. Live readiness, priorities, dated blockers, and assignments remain outside the public
-repository. This roadmap remains the higher-level product sequence.
+This roadmap defines product checkpoints. [`docs/tasks/README.md`](tasks/README.md) defines 46 bounded
+execution packages. [`docs/product-decisions.md`](product-decisions.md) defines accepted contracts.
+Current assignments, host state, and latest verification remain in private handoff.
 
-This roadmap is intentionally grouped into four implementation stages. Older long-range ideas are folded into these stages so each stage is large enough to test meaningfully without turning the project into many tiny milestones.
+## Capability Labels
 
-## Stage 1: Local Foundation
+- **Implemented:** code exists and current acceptance evidence is available.
+- **Partial:** useful code or tests exist, but package/stage exit evidence is incomplete.
+- **Planned:** accepted task contract exists; implementation is not complete.
+- **Deferred:** excluded with explicit revisit condition.
 
-Goal: make the repo usable and maintainable before adding resume scoring logic.
+## Current Snapshot
 
-Deliverables:
+- Root lint and 40 unit tests pass on the current Windows host.
+- Root CI is not healthy because committed documentation currently fails Prettier.
+- Tool inventory sees Docker CLI but marks its daemon unusable.
+- Local check still attempts Docker in one path and fails, confirming RC-001 remains partial.
+- ATS-safe source, local/API report scaffolds, tester wrappers, and basic comparison exist.
+- No complete macOS artifact proof, packaged CLI, Hunt integration, or product editing UI exists.
 
-- Local browser preview for the current LaTeX resume.
-- Temporary preview PDF generation under `.runtime/preview`, not `resume/output/`.
-- Explicit saved PDF generation only through the build command.
-- Root formatting, linting, and unit test setup.
-- Root GitHub Actions workflow for lightweight checks.
-- Documentation that explains command behavior and generated artifact locations.
+Historical “feature complete” commit messages do not override package acceptance evidence.
 
-Acceptance criteria:
+## Stage 1: Foundation Healthy
 
-- `npm run preview` lets a user view the resume locally without creating saved resume artifacts.
-- `npm run build:pdf` remains the intentional command for saved PDFs under `resume/output/`.
-- Generated preview and build artifacts stay out of Git.
-- Root checks cover the project scaffold and generator code.
-- Default CI runs lightweight root checks only.
-- Third-party tester snapshots under `testers/` are not part of default root CI.
+### Goal
 
-Non-goals:
+Make root tooling, capability detection, build selection, preview scaffold, tests, and lightweight CI
+truthful and reproducible.
 
-- No resume content edits.
-- No ATS-safe rewrite yet.
-- No text extraction gate yet.
-- No API calls.
-- No tester project integration.
-- No Hunt/C2 integration code.
+### Entry Conditions
 
-## Stage 2: Build And Text-Layer Validation
+- Node.js 22+ and npm available.
+- Public sample source present.
+- No PDF runtime required for deterministic unit slices.
 
-Goal: prove generated PDFs are machine-readable before deeper ATS scoring.
+### Contributing Packages
 
-Current implementation:
+- RC-001.1 through RC-001.4.
+- Existing generator, preview, formatting, lint, unit-test, and CI scaffolds.
 
-- PDF text extraction helper can use local `pdftotext` or Docker-backed `pdftotext`.
-- Extracted text checks cover non-empty text, section presence/order, optional configured terms, and encoding noise.
-- Page-limit behavior is a hard one-page failure when a PDF page count is available.
-- Docker-backed text extraction is supported when Docker is running.
-- The local suite runs text-layer checks when a PDF is provided or built.
+### Exit Evidence
 
-Deliverables:
+- Root format check, lint, and unit tests pass.
+- Docker installed-but-unusable and healthy cases are classified correctly.
+- Automatic build/extraction paths never select known unusable capability.
+- Preview stays temporary; intentional builds verify saved artifacts.
+- Missing optional tools do not fail lightweight CI; strict requirements fail clearly.
 
-- Scripted PDF text extraction.
-- Extracted text saved under ignored output or runtime paths.
-- Critical keyword checks.
-- Basic section order checks.
-- Actionable console output and machine-readable check results.
+### Current State
 
-Acceptance criteria:
+**Partial.** Scaffold exists and tests/lint pass. Formatting and capability-consumption defects prevent
+stage completion.
 
-- Important keywords such as `Kubernetes`, `Terraform`, `PostgreSQL`, `Kotlin`, `TypeScript`, and `DynamoDB` appear unbroken in extracted text.
-- Name, contact, education, experience, projects, and skills appear in a readable order.
-- Failures explain what broke and where to inspect generated artifacts.
-- Missing optional tools produce clear messages.
+## Stage 2: PDF Pipeline Proven
 
-## Stage 3: ATS And Job Description Evaluation
+### Goal
 
-Goal: evaluate resume quality and JD fit without rewriting content by default.
+Prove a real ATS-safe PDF can be built, counted, extracted, parsed, previewed, and cleaned without
+tracking private/generated artifacts.
 
-Current implementation:
+### Entry Conditions
 
-- Local preflight report checks source integrity, ATS layout risks, standard sections, parseable contact fields, JD signal coverage, and tester snapshot presence.
-- API/model review supports explicit opt-in OpenRouter and Anthropic adapters.
-- ATS-Checker parser comparison is wrapped for PDF parser-agreement checks; full tester applications remain reference snapshots until intentionally enabled.
-- `npm run check:testers` explicitly attempts tester execution and reports pass/skip results outside default CI.
+- Stage 1 capability contracts complete.
+- macOS host with either native TeX/Poppler or usable Docker runtime.
 
-Deliverables:
+### Contributing Packages
 
-- Local resume quality report using the criteria in `docs/resume-quality-criteria.md`.
-- JD keyword coverage report using sample or provided job descriptions.
-- Separation between deterministic local checks and optional API-backed checks.
-- Initial wrapper for selected tester tools under `testers/`.
-- Normalized report output that makes parser disagreement visible.
+- RC-002.1 through RC-002.3.
+- RC-003.2 for strict independent parser evidence.
 
-Acceptance criteria:
+### Exit Evidence
 
-- Reports separate global resume quality from job-specific matching.
-- API-backed checks never run accidentally.
-- Unavailable tester tools warn or skip without breaking unrelated local checks.
-- Findings include category, severity, evidence, and suggested fix direction.
+- Reproducible macOS runtime and versions recorded.
+- Public ATS source builds a non-empty PDF.
+- Page count known and D2 one-page policy applied.
+- Extracted text non-empty, ordered, readable, and free of encoding corruption.
+- ATS-Checker actually executes for strict proof.
+- Preview success/failure/current/stale behavior verified; server stops cleanly.
+- Saved and temporary artifacts remain separate and ignored.
 
-## Stage 4: Integration Contract
+### Current State
 
-Goal: expose stable commands and reports that Hunt/C2 can call later without coupling to this repo's internals.
+**Partial and externally blocked.** Build/text/preview code exists. Current host lacks a usable PDF
+runtime, and no complete macOS smoke evidence is current.
 
-Current implementation:
+## Stage 3: Evaluation Credible
 
-- `npm run check:local`, `npm run check:api`, and `npm run check:full` produce preflight reports.
-- `npm run compare` produces a postflight comparison report.
-- Reports use stable `pass`, `pass_with_warnings`, and `fail` status values and record whether content left the machine.
+### Goal
 
-Deliverables:
+Produce reliable deterministic preflight and postflight evidence, independent parser/tester results,
+and optional advisory model review.
 
-- Stable CLI or npm command contract for preflight checks.
-- Post-tailoring regression checks for generated resumes.
-- Immutable fact checks for identity, education, employers, titles, dates, and locations.
-- Stable JSON status values: `pass`, `pass_with_warnings`, and `fail`.
-- Documentation for how external tools should consume reports.
+### Entry Conditions
 
-Acceptance criteria:
+- Public fixtures for source, JD, PDF, and before/after comparisons.
+- Stage 2 artifact path for real PDF checks.
+- Accepted D1-D6 contracts.
 
-- Resume Cooker can run independently from Hunt.
-- Hunt can call Resume Cooker later through commands or reports, not imports.
-- Preflight and postflight results separate source-resume issues from tailoring regressions.
-- Reports identify whether content stayed local or left the machine.
+### Contributing Packages
 
-## Future UI Direction
+- RC-003.1 through RC-003.6.
+- RC-004.1 through RC-004.6.
+- RC-005.1 through RC-005.4 for optional provider readiness.
+- RC-006.1 through RC-006.3.
 
-Stage 1 should not build the full editing UI, but it should avoid choices that block one later. The intended direction is a local app where a user can view the resume, edit LaTeX, click generate, and see or download the resulting PDF.
+### Exit Evidence
+
+- Normal and strict tester profiles distinguish execution, skip, failure, and capability absence.
+- Immutable fact regressions, protected-strength loss, ungrounded additions, and PDF/text regressions
+  have passing and failing public fixtures.
+- Postflight reports use schema v1, sanitized evidence, and D7-compatible status/exit behavior.
+- Local checks remain fully useful without provider credentials.
+- Any provider called live has explicit authorization, bounded spend, synthetic inputs, and sanitized
+  readiness evidence.
+
+### Current State
+
+**Partial.** Deterministic preflight, API adapters/mocks, tester scaffolds, and narrow contact/term
+comparison exist. Full tester executions, normalized facts, actual postflight PDF inspection, and live
+provider readiness are incomplete.
+
+## Stage 4: Stable Product Boundary
+
+### Goal
+
+Expose versioned CLI/report behavior, integrate it around Hunt/Fletcher, and build a secure local
+editing/review UI without duplicating backend policy.
+
+### Entry Conditions
+
+- Stage 3 report contracts complete.
+- Accepted D7/D8 contracts.
+- Hunt repository available for evidence-based inventory.
+
+### Contributing Packages
+
+- RC-007.1 through RC-007.6.
+- RC-008.1 through RC-008.6.
+- RC-009.1 through RC-009.8.
+
+### Exit Evidence
+
+- Fresh checkout invokes packaged CLI with versioned schema, stable streams, and exits.
+- Hunt runs preflight before Fletcher and postflight before C3 readiness through process boundary.
+- Overrides are explicit/audited; Resume Cooker and Fletcher flags remain namespaced.
+- Enabled, failure, unavailable, override, disabled, and rollback paths have end-to-end fixtures.
+- Local UI safely edits approved raw LaTeX, handles conflicts/races/cancellation, shows findings and
+  privacy state, and separates preview from saved output.
+- Browser security, accessibility, lifecycle, and platform evidence passes.
+
+### Current State
+
+**Planned.** npm scripts and preview page are useful scaffolds. Packaged CLI, Hunt coordination, and
+product editing UI are not implemented.
+
+## Recommended Execution Order
+
+1. Restore formatting gate while implementing RC-006.1/RC-006.2 documentation alignment.
+2. Complete RC-001.1 through RC-001.3; run RC-001.4 when a usable runtime exists.
+3. Prove RC-002 and ATS-Checker path.
+4. Build postflight facts/regression packages and tester profiles in parallel where dependencies
+   allow.
+5. Freeze and package CLI.
+6. Inventory/integrate Hunt and build UI as separate consumers of the stable boundary.
+7. Validate live APIs only with explicit authorization; never block local-only critical path on them.
+
+## Deferred Beyond v1
+
+- Cloud hosting, accounts, sync, and collaboration.
+- Structured resume authoring or automatic claim rewriting.
+- Native desktop packaging.
+- Default or mandatory API review.
+- Root installation of all third-party tester dependencies.
+- npm publication without separate authorization and release plan.

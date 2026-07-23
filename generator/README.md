@@ -24,6 +24,11 @@ explicitly, run:
 npm run check:tools -- --require-pdf-engine
 ```
 
+**Current limitation:** tool inventory distinguishes availability/usability, but automatic build and
+PDF fallback paths do not yet consume one shared capability result. RC-001.1 through RC-001.3 close
+that gap; until then, an installed Docker CLI with stopped daemon can still fail later in a local
+check.
+
 ## PDF Build
 
 `npm run build:pdf` compiles `resume/source/current.tex` into `resume/output/current.pdf`.
@@ -87,5 +92,6 @@ This repo currently does not vendor a TeX distribution. Install one of:
 - Docker with the daemon running, so the generator can use the `texlive/texlive` image
 
 The current Docker image tags are not pinned. Reproducibility and macOS end-to-end verification are
-tracked in [`RC-002`](../docs/tasks/RC-002-macos-pdf-pipeline.md); truthful Docker readiness is
-tracked in [`RC-001`](../docs/tasks/RC-001-toolchain-detection.md).
+tracked in [RC-002.1 through RC-002.3](../docs/tasks/README.md#rc-002-proven-pdf-pipeline); truthful
+Docker readiness is tracked in
+[RC-001.1 through RC-001.4](../docs/tasks/README.md#rc-001-truthful-capability-detection).

@@ -1,5 +1,17 @@
 # RC-003: Complete Tester Integrations
 
+**Planning level:** Epic. Execute through these bounded work packages:
+
+- [RC-003.1](RC-003.1-tester-adapter-contract.md): common adapter and outcome contract.
+- [RC-003.2](RC-003.2-ats-checker-integration.md): ATS-Checker parser agreement.
+- [RC-003.3](RC-003.3-resume-parser-integration.md): ResumeParser structural evidence.
+- [RC-003.4](RC-003.4-ats-screener-integration.md): ats-screener local scoring.
+- [RC-003.5](RC-003.5-resume-matcher-operation.md): bounded Resume-Matcher proof or deferral.
+- [RC-003.6](RC-003.6-tester-profiles.md): normal/strict profiles and cross-parser summary.
+
+[D5](../product-decisions.md#d5-tester-priority-and-requiredness) fixes tester order and strict
+requiredness. Current wrappers are partial; no skip counts or smoke claims imply completion.
+
 ## Objective
 
 Turn the vendored tester snapshots into explicit, reproducible, normalized local integrations. A
@@ -56,8 +68,9 @@ dependencies and generated artifacts vary by machine.
 
 - RC-002 for a real PDF and extracted text.
 - A documented dependency strategy for each selected tester.
-- RC-006 for the long-term tester priority decision. ATS-Checker is the practical first choice
-  because a wrapper already exists, but that must be recorded rather than assumed permanently.
+- RC-006.1 publishes D5. ATS-Checker is the accepted first full integration and strict-profile
+  requirement; ResumeParser and ats-screener follow, while Resume-Matcher remains optional pending
+  RC-003.5.
 
 ### Blocks
 

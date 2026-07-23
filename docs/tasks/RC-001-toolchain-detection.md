@@ -1,5 +1,15 @@
 # RC-001: Reliable Tool And Engine Detection
 
+**Planning level:** Epic. Execute through these bounded work packages:
+
+- [RC-001.1](RC-001.1-capability-probe-contract.md): shared structured capability probes.
+- [RC-001.2](RC-001.2-pdf-engine-selection.md): capability-aware build-engine selection.
+- [RC-001.3](RC-001.3-pdf-tool-fallbacks.md): truthful extraction and page-count fallbacks.
+- [RC-001.4](RC-001.4-toolchain-smoke-and-docs.md): real runtime smoke and documentation.
+
+Current evidence: tool inventory distinguishes Docker availability from usability, but automatic
+build/extraction paths do not yet consume one shared capability contract. Treat epic as partial.
+
 ## Objective
 
 Make every tool probe and automatic engine choice report actual usability, not merely executable

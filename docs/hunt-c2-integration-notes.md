@@ -120,8 +120,9 @@ npm run check:full
 npm run compare
 ```
 
-These commands already emit the stable `pass`, `pass_with_warnings`, and `fail` status shape under
-`.runtime/reports/`. They are not yet a packaged `resume-cooker` binary.
+These commands emit the current `pass`, `pass_with_warnings`, and `fail` shape under
+`.runtime/reports/`. They are partial scaffolds, not yet a packaged `resume-cooker` binary or the
+schema-v1 integration boundary defined by D7.
 
 Hunt can later shell out to those commands or call a tiny HTTP service. That keeps Resume Cooker testable independently and avoids coupling it to Hunt's DB schema.
 
@@ -191,28 +192,40 @@ Resume Cooker should add lower-level resume quality flags, such as:
 
 When integrated later, Hunt can keep Fletcher flags and Resume Cooker flags separate. Fletcher flags explain tailoring confidence. Resume Cooker flags explain resume artifact quality.
 
-## Resolved Defaults
+## Accepted Integration Contracts
 
-These were previously open questions but have clear answers and are no longer worth asking:
+Durable decisions live in [`docs/product-decisions.md`](product-decisions.md):
 
 - Private PDFs are never uploaded as GitHub Action artifacts. CI stays lightweight and never publishes private resume content.
 - Reports and extracted text are ignored/private, stored only under runtime output (`.runtime/`), not committed.
-- There is no static must-preserve keyword list as the primary integrity mechanism. Text integrity is judged dynamically when optional external review is enabled; deterministic checks stay limited to empty text, encoding noise, and section presence.
-- The current PDF page-limit check hard-fails when a known page count exceeds the configured limit.
-  Final caller-policy and override behavior remains an RC-006 decision.
+- There is no static global must-preserve keyword list as the primary integrity mechanism. Callers
+  may provide protected-strength IDs; deterministic extraction checks cover empty text, encoding,
+  sections, and configured terms. Optional external review remains advisory.
+- ATS profile hard-fails a known page count over one by default. Unknown count is an incomplete
+  warning in normal mode and unavailable required capability in strict mode. Caller policy may be
+  versioned.
 - Current source preflight reports contact presence/parseability without printing values. Postflight
-  comparison checks normalized email and phone preservation. Broader immutable facts remain RC-004
-  work.
+  comparison currently checks normalized email and phone preservation. RC-004.1 through RC-004.6
+  add structured facts, broader immutable fields, protected strengths, grounding, and PDF inspection.
+- ATS ownership is hybrid: caller source is authoritative; Resume Cooker may provide an optional
+  variant but cannot invent claims.
+- Hunt owns enforcement. Preflight `fail` blocks Fletcher by default, warnings proceed visibly, and
+  overrides require approver, reason, report identity, and timestamp.
+- Structured JSON is authoritative for facts when present; source/LaTeX governs preservation and the
+  final PDF/text governs artifact quality.
+- ATS-Checker integrates first and is strict-profile required. Other tester dependencies remain
+  optional for normal local use.
+- OpenRouter and Anthropic review remains explicit, bounded, advisory, and cannot be the sole hard
+  blocker.
 
-## Open Design Questions
+## Planned Integration Packages
 
-Genuine feature/design forks where more than one path is reasonable:
+No Hunt integration code exists yet. Execute in order:
 
-- Should Resume Cooker generate the ATS-safe resume variant, or only verify that a good one exists? (Also gates Stage 3 scope.)
-- Should a pre-C2 failure hard-block Fletcher automatically, or only warn and let the caller decide?
-- Should post-C2 comparison run against the raw LaTeX, the parsed structured resume JSON, or both? (Affects the compare architecture.)
-- Which tester tool under `testers/` should be wrapped first?
-- How far should optional model-based text-integrity review go, and under which provider and cost gate? Desired direction is dynamic inspection of extracted text behind an explicit API/full-suite opt-in, but scope, provider, and cost controls are open.
-
-These questions are tracked with required decision outputs, dependencies, and acceptance criteria in
-[`RC-006`](tasks/RC-006-contract-decisions.md).
+1. [RC-008.1](tasks/RC-008.1-hunt-surface-inventory.md): inspect current Hunt paths and freeze
+   fixtures; revalidate older path notes above.
+2. [RC-008.2](tasks/RC-008.2-hunt-process-adapter.md): validated CLI process boundary.
+3. [RC-008.3](tasks/RC-008.3-hunt-preflight-policy.md): preflight and audited override.
+4. [RC-008.4](tasks/RC-008.4-hunt-postflight.md): post-Fletcher comparison.
+5. [RC-008.5](tasks/RC-008.5-hunt-readiness-mapping.md): namespaced flags and C3 readiness.
+6. [RC-008.6](tasks/RC-008.6-hunt-end-to-end-rollout.md): enabled, failure, and rollback proof.

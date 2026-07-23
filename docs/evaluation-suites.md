@@ -2,6 +2,10 @@
 
 Resume Cooker can use both local checks and API-backed checks. The key boundary is that Resume Cooker owns this evaluation work; Hunt C2/Fletcher should stay local-model-first unless explicitly changed later.
 
+**Status:** local report scaffolds and API adapters are partial; packaged CLI syntax below is planned
+under RC-007. API live readiness is not established. Accepted policy lives in
+[`docs/product-decisions.md`](product-decisions.md).
+
 ## Principles
 
 - Local checks must be able to run offline.
@@ -43,11 +47,20 @@ npm run check:local:ats
 ```
 
 The ATS command targets `resume/source/ats.tex`, builds `resume/output/ats.pdf`, extracts text, and
-hard-fails `pdf_page_limit` if the produced PDF is over one page.
+hard-fails `pdf_page_limit` if the produced PDF is over one page. Per
+[D2](product-decisions.md#d2-page-limit-severity), an unknown page count is an incomplete warning in
+normal local mode and exit `69` in strict release validation.
+
+Normal local mode keeps tester tools optional. Strict release validation requires ATS-Checker to
+execute and a page count to be known. [RC-003.6](tasks/RC-003.6-tester-profiles.md) implements this
+profile split.
 
 ### API Suite
 
 Purpose: checks that benefit from stronger external models or provider-specific evaluation.
+
+API findings are advisory and cannot be the sole hard blocker. Every run remains explicit, bounded,
+and privacy-labeled under [D6](product-decisions.md#d6-api-review-scope).
 
 Examples:
 
@@ -141,13 +154,16 @@ Every check should report execution source:
 {
   "id": "semantic_jd_match",
   "suite": "api",
-  "provider": "openai",
+  "provider": "openrouter",
   "model": "example-model",
   "content_left_machine": true,
   "status": "warning",
   "severity": "medium"
 }
 ```
+
+Schema-v1 reports also include a top-level schema version, stable status, inputs checked, skipped
+evidence, and sanitized findings. Raw contact values and source excerpts are not report evidence.
 
 Local-model checks should also label themselves clearly:
 
@@ -164,7 +180,8 @@ Local-model checks should also label themselves clearly:
 
 ## Relationship To Hunt C2
 
-Hunt C2 can continue using local models for resume tailoring. Resume Cooker may use API calls for evaluation because it is a separate, explicit quality gate.
+Hunt C2 can continue using local models for resume tailoring. Resume Cooker may use API calls for
+advisory evaluation because it is a separate, explicit quality gate.
 
 Later integration should look like:
 
@@ -177,3 +194,6 @@ Optional Resume Cooker API postflight
 ```
 
 If API checks are unavailable, local checks should still provide useful pass/fail and warnings.
+Hunt owns enforcement: preflight `fail` blocks Fletcher by default, warnings proceed visibly, and an
+override must be explicit and audited. See [D3](product-decisions.md#d3-pre-c2-enforcement) and
+[RC-008](tasks/RC-008-hunt-integration.md).

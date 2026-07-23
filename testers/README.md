@@ -17,10 +17,10 @@ The copies intentionally exclude nested `.git` directories, virtual environments
 
 | Tool | Role In Resume Cooker |
 | --- | --- |
-| `ATS-Checker` | Simple parser/scorer reference implementation. Useful for quick smoke checks. |
-| `ats-screener` | Richer local ATS scoring engine and platform-oriented scoring ideas. Includes the local `scripts/score-local.ts` change copied from the previous workspace. |
-| `Resume-Matcher` | Resume/JD matching and parser/comparison reference app. Useful for ideas and possible parser comparison. |
-| `ResumeParser` | Python resume parser reference. Useful for extracting structured fields from PDFs/text. |
+| `ATS-Checker` | First complete integration; required only for strict release validation. |
+| `ResumeParser` | Second integration; sanitized structured-presence evidence. |
+| `ats-screener` | Third integration; isolated local JD/component scoring only. |
+| `Resume-Matcher` | Optional until RC-003.5 proves one useful bounded local operation. |
 
 ## Dependency Policy
 
@@ -45,3 +45,8 @@ npm run check:testers
 The wrapper normalizes output into the report format described in
 `docs/resume-quality-criteria.md`. Tester dependencies are intentionally not installed by default;
 missing dependencies or missing PDFs/text files report warnings instead of joining default CI.
+
+Normal profile treats every adapter as optional. Strict release profile requires ATS-Checker to
+execute; unavailable required capability exits `69`. Skips retain stable IDs and reasons and never
+appear as passes. See [D5](../docs/product-decisions.md#d5-tester-priority-and-requiredness) and
+[RC-003.1 through RC-003.6](../docs/tasks/README.md#rc-003-tester-integrations).

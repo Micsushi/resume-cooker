@@ -1,5 +1,17 @@
 # RC-004: Complete Postflight Regression Checks
 
+**Planning level:** Epic. Execute through these bounded work packages:
+
+- [RC-004.1](RC-004.1-compare-fixtures-and-facts.md): fixtures and normalized facts.
+- [RC-004.2](RC-004.2-immutable-fact-comparison.md): immutable fact comparison.
+- [RC-004.3](RC-004.3-strength-retention.md): protected strengths and intentional omissions.
+- [RC-004.4](RC-004.4-jd-grounding.md): grounded and ungrounded additions.
+- [RC-004.5](RC-004.5-postflight-pdf-checks.md): real PDF/text inspection.
+- [RC-004.6](RC-004.6-postflight-report-contract.md): versioned aggregate report.
+
+[D4](../product-decisions.md#d4-postflight-inputs) fixes input precedence. Current contact/term
+comparison is partial and supplied PDFs are not yet inspected.
+
 ## Objective
 
 Make `compare` a credible post-tailoring safety gate. It must detect factual changes, PDF and text
@@ -45,13 +57,13 @@ The roadmap expects more:
 - Proving real-world truth beyond the provided source profile.
 - Inferring private facts from external services.
 - Replacing Fletcher's structured schema validation.
-- Blocking downstream systems until RC-006 explicitly defines enforcement policy.
+- Applying Hunt enforcement or overrides; D3 assigns that responsibility to Hunt.
 
 ## Dependencies
 
 ### Blocked By
 
-- RC-006 decisions about comparison inputs and hard-block semantics.
+- RC-006.1 publication of accepted D3/D4 comparison and enforcement contracts.
 - RC-002 for real PDF, extraction, and page-count acceptance testing.
 
 Independent work can begin on fixtures, fact normalization, source-to-source comparison, and report
@@ -73,8 +85,8 @@ The resolved contract should support:
 - optional JD;
 - optional Fletcher structured JSON and concern flags.
 
-Until RC-006 chooses raw LaTeX, structured JSON, or both as the authoritative comparison input, the
-implementation must avoid baking in an irreversible assumption. A layered design is preferred:
+Per D4, structured JSON is authoritative for normalized facts when supplied, source/LaTeX governs
+preservation, and PDF/text governs artifact checks. Implementation uses a layered design:
 
 1. extract normalized facts from each supported input;
 2. compare normalized facts;
@@ -88,7 +100,8 @@ implementation must avoid baking in an irreversible assumption. A layered design
 - Name presence and stable normalized representation.
 - Email equality without printing values.
 - Phone equality after formatting normalization.
-- Location policy once defined: exact, city/region normalization, or warning-only.
+- Configured location equality after case/whitespace and common region-abbreviation normalization;
+  ambiguous equivalence warns.
 
 ### Education
 

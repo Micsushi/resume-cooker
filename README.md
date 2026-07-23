@@ -15,8 +15,10 @@ Public sample project for resume PDF generation, local checks, and ATS parsing e
 ## Planning Docs
 
 - `docs/roadmap.md`: staged roadmap from local foundation through future integration.
-- `docs/tasks/README.md`: pickup-ready implementation backlog, dependency graph, task status model,
-  and handoff requirements.
+- `docs/product-decisions.md`: accepted ATS, page, enforcement, comparison, tester, API, CLI, and UI
+  contracts.
+- `docs/tasks/README.md`: nine epics decomposed into 46 execution-ready work packages, with a
+  package-level dependency graph, status model, and handoff requirements.
 - `docs/resume-quality-criteria.md`: criteria list for parseability, ATS safety, evidence quality, keyword coverage, and post-tailoring regressions.
 - `docs/hunt-c2-integration-notes.md`: notes on how Resume Cooker can later run before and after Hunt C2/Fletcher.
 - `docs/evaluation-suites.md`: planned separation between local-only checks, optional API checks, and full checks.
@@ -29,9 +31,16 @@ The repo now preserves sample resume content, tester projects, and a lightweight
 
 Current implementation focus:
 
-1. Keep Stage 1 local foundation healthy: preview behavior, root formatting, linting, tests, lightweight CI, and docs.
-2. Expand deterministic local checks for source quality, PDF text layers, JD matching, and post-tailoring regressions.
-3. Keep external API/model review explicit opt-in because resume and JD content may be private.
+1. Finish truthful capability consumption and restore the Stage 1 formatting gate.
+2. Prove the full macOS ATS PDF, text, page, parser, and preview path.
+3. Complete deterministic postflight facts/regressions and strict tester evidence.
+4. Package the stable CLI before Hunt integration or the editing UI consume it.
+5. Keep external API/model review explicit, bounded, and advisory because resume and JD content may
+   be private.
+
+Capability labels and current limitations are maintained in
+[`docs/roadmap.md`](docs/roadmap.md#current-snapshot). File presence or historical commit messages do
+not imply a task is complete; package acceptance evidence controls status.
 
 ## Requirements
 
@@ -124,7 +133,7 @@ Optional API settings:
 
 ## Remaining Work
 
-The remaining work is split into scoped task specifications under [`docs/tasks/`](docs/tasks/README.md).
-Each task names its prerequisites, downstream dependencies, non-goals, implementation slices,
-acceptance criteria, verification commands, failure modes, and required handoff evidence. Start with
-the backlog index rather than inferring task order from roadmap stage numbers.
+Remaining work is split into 46 bounded packages under [`docs/tasks/`](docs/tasks/README.md). Each
+package owns one outcome and names its prerequisites, files, inputs/outputs, non-goals, sequence,
+acceptance criteria, exact verification, failure/privacy rules, and required handoff evidence. Start
+with the package registry rather than inferring execution order from roadmap stage numbers.

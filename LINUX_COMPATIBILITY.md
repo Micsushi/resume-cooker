@@ -6,6 +6,10 @@ Audit date: 2026-07-03
 
 Mostly compatible. Node tests pass in a Linux container. PDF generation needs TeX/Poppler tools on the host or Docker access inside the runtime environment.
 
+**Evidence status:** results below describe the dated 2026-07-03/04 audit. They do not prove current
+repository-wide formatting or a real Linux PDF path. Package-level Linux capability smoke belongs to
+RC-001.4; macOS is the required Stage 2 artifact host under RC-002.1.
+
 ## What Was Tested
 
 Disposable Node 22 Docker test:
@@ -61,3 +65,7 @@ npm run check:local
 ```
 
 Run `npm run build:pdf` only after a PDF engine is present.
+
+When testing PDF behavior, also require usable extraction/page tools and run
+`npm run check:local:ats`. Missing optional tools remain acceptable for ordinary root tests; strict
+release validation treats missing required page/ATS-Checker capability as exit `69`.

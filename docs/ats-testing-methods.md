@@ -59,7 +59,9 @@ Current root-owned checks can:
 - Run one or more parser/scoring tools against a sample job description.
 
 The tester integrations remain partial. Detailed completion work and prerequisites are defined in
-[`RC-003`](tasks/RC-003-tester-integrations.md).
+[`RC-003`](tasks/RC-003-tester-integrations.md), with one package per adapter and profiles in
+[RC-003.6](tasks/RC-003.6-tester-profiles.md). ATS-Checker is required only for strict release
+validation; normal local checks keep tester dependencies optional.
 
 ## Tool Inventory
 
@@ -70,7 +72,9 @@ The current private repo includes these tester snapshots under `testers/`:
 - `Resume-Matcher`
 - `ResumeParser`
 
-These are source snapshots, not installed environments. Their dependency folders are intentionally excluded so the private repo stays pushable.
+These are source snapshots, not installed environments. Their dependency folders are intentionally
+excluded so the repository stays lightweight. A skipped adapter remains explicit incomplete evidence
+and never counts as an executed pass.
 
 ## Preview Workflow
 

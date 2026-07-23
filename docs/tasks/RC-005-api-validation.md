@@ -1,5 +1,15 @@
 # RC-005: Safe Live API Provider Validation
 
+**Planning level:** Epic. Execute through these bounded work packages:
+
+- [RC-005.1](RC-005.1-api-smoke-guardrails.md): authorization, synthetic data, budgets, and secrets.
+- [RC-005.2](RC-005.2-openrouter-live-validation.md): OpenRouter live proof.
+- [RC-005.3](RC-005.3-anthropic-live-validation.md): Anthropic live proof.
+- [RC-005.4](RC-005.4-provider-readiness.md): sanitized readiness classification.
+
+[D6](../product-decisions.md#d6-api-review-scope) keeps API review explicit and advisory. Mocked
+coverage is implemented; live readiness remains blocked on explicit authorization and credentials.
+
 ## Objective
 
 Prove the OpenRouter and Anthropic adapters against live provider endpoints using public synthetic

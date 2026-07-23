@@ -1,5 +1,19 @@
 # RC-009: Local Editing And Review UI
 
+**Planning level:** Product-surface epic. Execute through these bounded work packages:
+
+- [RC-009.1](RC-009.1-ui-v1-contract.md): source/save/security/state contract.
+- [RC-009.2](RC-009.2-preview-service-refactor.md): testable preview services.
+- [RC-009.3](RC-009.3-safe-source-files.md): approved source load/save.
+- [RC-009.4](RC-009.4-build-operation-state.md): cancellable, stale-safe builds.
+- [RC-009.5](RC-009.5-report-api.md): local report API.
+- [RC-009.6](RC-009.6-editor-preview-ui.md): editor and PDF preview.
+- [RC-009.7](RC-009.7-findings-tools-output-ui.md): findings, tools, privacy, saved output.
+- [RC-009.8](RC-009.8-ui-hardening.md): security, accessibility, and lifecycle gates.
+
+[D8](../product-decisions.md#d8-ui-ownership-boundary) fixes UI v1 as raw-LaTeX local editing. No
+product UI exists beyond the preview page.
+
 ## Objective
 
 Build a local interface where a user can inspect the source, edit through the approved source model,
